@@ -34,6 +34,8 @@ Bei Los werden alle Tokens der Party benutzt um Top Tracks zu ziehen
 Mit Top Tracks fette Analyse starten
 Top X Tracks nehmen und Playlist in Host Account anlegen
 
+Theoretisch kann man die Party in der DB wieder löschen nachdem die Playlist erstellt ist
+
 ## DB
 
 MongoDB
@@ -55,6 +57,14 @@ parties collection:
 
 ## Backend
 
-createParty:
+`createParty(partyName, host: {token})`:
 generate id
-create db object with id, party name, host token
+get username from token
+generate party object with id, name and host user
+
+`addUser(partyId, user: {token})`:
+get username from token
+add user to existing party by id
+
+`getPartyTracks(partyId)`:
+for each user in a party take the token and get the top tracks
