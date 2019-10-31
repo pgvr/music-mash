@@ -1,0 +1,19 @@
+<nb-card *ngIf="!party.partyName">
+  <nb-card-body class="party-card">
+    <input
+      nbInput
+      fullwidth
+      fieldSize="giant"
+      placeholder="Partyname..."
+      [(ngModel)]="partyName"
+    />
+    <button
+      status="success"
+      [disabled]="partyName === ''"
+      nbButton
+      (click)="authenticateHost()"
+    >
+      Connect to Spotify
+    </button>
+  </nb-card-body>
+</nb-card>

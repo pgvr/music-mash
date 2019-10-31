@@ -1,25 +1,37 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { BrowserModule } from "@angular/platform-browser"
+import { NgModule } from "@angular/core"
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NbThemeModule, NbLayoutModule } from '@nebular/theme';
-import { NbEvaIconsModule } from '@nebular/eva-icons';
+import { AppRoutingModule } from "./app-routing.module"
+import { AppComponent } from "./app.component"
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations"
+import {
+  NbThemeModule,
+  NbLayoutModule,
+  NbButtonModule,
+  NbIconModule,
+  NbInputModule,
+  NbCardModule,
+} from "@nebular/theme"
+import { NbEvaIconsModule } from "@nebular/eva-icons"
+import { PartyComponent } from "./party/party.component"
+import { FormsModule } from "@angular/forms"
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent, PartyComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    NbThemeModule.forRoot({ name: 'cosmic' }),
+    NbThemeModule.forRoot({ name: "cosmic" }),
     NbLayoutModule,
-    NbEvaIconsModule
+    NbButtonModule,
+    NbIconModule,
+    NbInputModule,
+    NbCardModule,
+    FormsModule,
+    NbEvaIconsModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
