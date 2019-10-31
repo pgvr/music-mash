@@ -12,6 +12,7 @@ console.log(uri)
     MongooseModule.forRoot(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      useFindAndModify: false,
     }),
     PartyModule,
   ],

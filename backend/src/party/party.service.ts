@@ -27,4 +27,21 @@ export class PartyService {
     const createdParty = new this.partyModel(newParty)
     return await createdParty.save()
   }
+
+  public async addPartyMember(
+    username: String,
+    token: String,
+    partyId: String,
+  ) {
+    const partyMember = { host: false, token, username }
+    const updatedParty = await this.partyModel.findByIdAndUpdate(partyId, {
+      $push: { partygoers: partyMember },
+    })
+    return updatedParty
+  }
+
+  public async getPartyById(partyId: String) {
+    const party = await this.partyModel.find({ _id: partyId }).exec()
+    return party
+  }
 }
