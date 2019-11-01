@@ -1,19 +1,26 @@
-<nb-card *ngIf="!party.partyName">
-  <nb-card-body class="party-card">
-    <input
-      nbInput
-      fullwidth
-      fieldSize="giant"
-      placeholder="Partyname..."
-      [(ngModel)]="partyName"
-    />
-    <button
-      status="success"
-      [disabled]="partyName === ''"
-      nbButton
-      (click)="authenticateHost()"
-    >
-      Connect to Spotify
-    </button>
-  </nb-card-body>
-</nb-card>
+<ng-container *ngIf="!loading">
+  <nb-card *ngIf="!party">
+    <nb-card-body class="party-card">
+      <input
+        nbInput
+        fullwidth
+        fieldSize="giant"
+        placeholder="Partyname..."
+        [(ngModel)]="partyNameModel"
+      />
+      <button
+        status="success"
+        [disabled]="partyName === ''"
+        nbButton
+        (click)="authenticateHost()"
+      >
+        Connect to Spotify
+      </button>
+    </nb-card-body>
+  </nb-card>
+  <nb-card *ngIf="party">
+    <h1>{{ party.name }}</h1>
+  </nb-card>
+</ng-container>
+
+<ng-container *ngIf="loading">Loading ...</ng-container>

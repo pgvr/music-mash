@@ -15,6 +15,7 @@ import {
 import { NbEvaIconsModule } from "@nebular/eva-icons"
 import { PartyComponent } from "./party/party.component"
 import { FormsModule } from "@angular/forms"
+import { HttpClientModule } from "@angular/common/http"
 
 @NgModule({
   declarations: [AppComponent, PartyComponent],
@@ -29,6 +30,7 @@ import { FormsModule } from "@angular/forms"
     NbInputModule,
     NbCardModule,
     FormsModule,
+    HttpClientModule,
     NbEvaIconsModule,
   ],
   providers: [],
