@@ -2,6 +2,10 @@ import { Injectable, HttpService } from "@nestjs/common"
 import { Party } from "./interfaces/party.interface"
 import { InjectModel } from "@nestjs/mongoose"
 import { Model } from "mongoose"
+import { config } from "dotenv"
+import { resolve } from "path"
+config({ path: resolve(__dirname, "../../.env") })
+const redirectUri = process.env.REDIRECT_URI || ""
 
 @Injectable()
 export class PartyService {
@@ -14,7 +18,7 @@ export class PartyService {
     let body = new URLSearchParams()
     body.set("grant_type", "authorization_code")
     body.set("code", authToken)
-    body.set("redirect_uri", "http://localhost:4200/party")
+    body.set("redirect_uri", redirectUri)
     const headers = {
       Authorization:
         "Basic ZDllZDQ3MWQyZGFlNGVjOGEyNmU3NzI1YmY2MmZhNzk6YWJkNWY3MjZlMDQ3NDU1ZDhmMGE3ODQxZTJjMzRkYmY=",
