@@ -19,7 +19,7 @@ export class PartyController {
       partygoers: [
         {
           host: true,
-          token: partyCreationDTO.hostToken,
+          token: accessToken,
           username: username,
         },
       ],
@@ -36,7 +36,7 @@ export class PartyController {
     const username = await this.partyService.getSpotifyUsername(accessToken)
     const updatedParty = await this.partyService.addPartyMember(
       username,
-      partyMemberDTO.memberToken,
+      accessToken,
       partyMemberDTO.partyId,
     )
     return updatedParty
@@ -46,5 +46,11 @@ export class PartyController {
   async getPartyById(@Param("id") id) {
     const result = await this.partyService.getPartyById(id)
     return result
+  }
+
+  @Get("/partytime/:id")
+  async getTopTracks(@Param("id") id) {
+    const topTracks = await this.partyService.getPartyTracks(id)
+    return topTracks
   }
 }

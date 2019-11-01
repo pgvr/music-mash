@@ -30,4 +30,11 @@ export class PartyService {
     const res = this.http.post(`${this.api}/update`, data).toPromise()
     return res
   }
+
+  async getTopTracks(partyId: string): Promise<any[]> {
+    const res = (await this.http
+      .get(`${this.api}/partytime/${partyId}`)
+      .toPromise()) as any[]
+    return res
+  }
 }

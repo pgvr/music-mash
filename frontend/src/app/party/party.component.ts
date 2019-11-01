@@ -12,6 +12,7 @@ export class PartyComponent implements OnInit {
   partyNameModel = ""
   loading = true
   party: Party
+  tracks = []
 
   constructor(
     private route: ActivatedRoute,
@@ -84,5 +85,11 @@ export class PartyComponent implements OnInit {
     localStorage.clear()
     this.party = null
     this.partyNameModel = ""
+  }
+
+  async partyTime() {
+    const topTracks = await this.partyService.getTopTracks(this.party._id)
+    console.log(topTracks)
+    this.tracks = topTracks
   }
 }

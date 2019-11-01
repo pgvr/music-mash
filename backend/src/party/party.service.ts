@@ -64,7 +64,39 @@ export class PartyService {
   }
 
   public async getPartyById(partyId: String) {
-    const party = await this.partyModel.find({ _id: partyId }).exec()
+    const party = (await this.partyModel.find({ _id: partyId }).exec()) as Party
     return party
+  }
+
+  public async getPartyTracks(partyId: string) {
+    let party = await this.getPartyById(partyId)
+    party = party[0]
+    let hostToken
+    let topTracks = []
+    for (let i = 0; i < party.partygoers.length; i++) {
+      const member = party.partygoers[i]
+      const userTracks = await this.getTopTracks(member.token)
+      topTracks = [...topTracks, ...userTracks]
+      // Save host token for playlist creation
+      if (member.host) {
+        hostToken = member.token
+      }
+    }
+    console.log(topTracks)
+    return topTracks
+  }
+
+  private async getTopTracks(userToken: string) {
+    const url = "https://api.spotify.com/v1/me/top/tracks"
+    const res = await this.httpService
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+      .toPromise()
+    return res.data["items"]
   }
 }
