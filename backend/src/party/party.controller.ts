@@ -10,10 +10,13 @@ export class PartyController {
 
   @Post("/create")
   async createParty(@Body() partyCreationDTO: PartyCreationDTO) {
+    console.log("start create")
     const accessToken = await this.partyService.getAccessToken(
       partyCreationDTO.hostToken,
     )
+    console.log(accessToken)
     const username = await this.partyService.getSpotifyUsername(accessToken)
+    console.log(username)
     const newParty: Party = {
       name: partyCreationDTO.partyName,
       partygoers: [
@@ -25,6 +28,7 @@ export class PartyController {
       ],
     }
     const createdParty = await this.partyService.createParty(newParty)
+    console.log(createdParty)
     return createdParty
   }
 
