@@ -1,11 +1,12 @@
 import { Injectable } from "@angular/core"
 import { HttpClient } from "@angular/common/http"
+import { environment } from "../../environments/environment"
 
 @Injectable({
   providedIn: "root",
 })
 export class PartyService {
-  api = "http://localhost:3000/party"
+  api = environment.apiUrl + "/party"
   constructor(private http: HttpClient) {}
 
   async getPartyById(partyId: string) {
