@@ -8,6 +8,11 @@ export class PartyService {
   api = "http://localhost:3000/party"
   constructor(private http: HttpClient) {}
 
+  async getPartyById(partyId: string) {
+    const res = this.http.get(`${this.api}/${partyId}`).toPromise()
+    return res
+  }
+
   async createNewParty(partyName: string, hostToken: string) {
     const data = {
       partyName,

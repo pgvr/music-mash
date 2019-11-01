@@ -1,4 +1,4 @@
 export interface PartyCreationDTO {
-  partyName: String
-  hostToken: String
+  partyName: string
+  hostToken: string
 }

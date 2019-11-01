@@ -5,7 +5,6 @@ import { resolve } from "path"
 import { PartyModule } from "./party/party.module"
 config({ path: resolve(__dirname, "../../.env") })
 const uri = process.env.DATABASE_URI || ""
-console.log(uri)
 
 @Module({
   imports: [

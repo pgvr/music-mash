@@ -10,7 +10,7 @@
       />
       <button
         status="success"
-        [disabled]="partyName === ''"
+        [disabled]="partyNameModel === ''"
         nbButton
         (click)="authenticateHost()"
       >
@@ -20,7 +20,15 @@
   </nb-card>
   <nb-card *ngIf="party">
     <h1>{{ party.name }}</h1>
+    <div *ngFor="let member of party.partygoers">
+      {{ member.username }}, Host: {{ member.host }}
+    </div>
+    <button nbButton status="primary" (click)="addMember()">Add Member</button>
   </nb-card>
 </ng-container>
+
+<button status="warning" nbButton (click)="startNewParty()">
+  New Party
+</button>
 
 <ng-container *ngIf="loading">Loading ...</ng-container>

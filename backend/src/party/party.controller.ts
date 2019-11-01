@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get } from "@nestjs/common"
+import { Controller, Post, Body, Get, Param } from "@nestjs/common"
 import { PartyService } from "./party.service"
 import { PartyCreationDTO } from "./interfaces/partyCreation.dto"
 import { Party } from "./interfaces/party.interface"
@@ -10,9 +10,10 @@ export class PartyController {
 
   @Post("/create")
   async createParty(@Body() partyCreationDTO: PartyCreationDTO) {
-    const username = await this.partyService.getSpotifyUsername(
+    const accessToken = await this.partyService.getAccessToken(
       partyCreationDTO.hostToken,
     )
+    const username = await this.partyService.getSpotifyUsername(accessToken)
     const newParty: Party = {
       name: partyCreationDTO.partyName,
       partygoers: [
@@ -29,9 +30,10 @@ export class PartyController {
 
   @Post("/update")
   async addPartyMember(@Body() partyMemberDTO: PartyMemberDTO) {
-    const username = await this.partyService.getSpotifyUsername(
+    const accessToken = await this.partyService.getAccessToken(
       partyMemberDTO.memberToken,
     )
+    const username = await this.partyService.getSpotifyUsername(accessToken)
     const updatedParty = await this.partyService.addPartyMember(
       username,
       partyMemberDTO.memberToken,
@@ -40,9 +42,9 @@ export class PartyController {
     return updatedParty
   }
 
-  @Get("/id")
-  async getPartyById(@Body() party: { id: string }) {
-    const result = await this.partyService.getPartyById(party.id)
+  @Get(":id")
+  async getPartyById(@Param("id") id) {
+    const result = await this.partyService.getPartyById(id)
     return result
   }
 }

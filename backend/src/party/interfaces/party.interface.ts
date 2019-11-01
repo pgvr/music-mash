@@ -1,5 +1,5 @@
 export interface Party {
-  _id?: String
-  name?: String
-  partygoers: { _id?: String; username: String; token: String; host: Boolean }[]
+  _id?: string
+  name?: string
+  partygoers: { _id?: string; username: string; token: string; host: boolean }[]
 }

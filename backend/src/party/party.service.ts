@@ -9,7 +9,23 @@ export class PartyService {
     private readonly httpService: HttpService,
     @InjectModel("Party") private readonly partyModel: Model<Party>,
   ) {}
-  public async getSpotifyUsername(token: String) {
+
+  public async getAccessToken(authToken: string) {
+    let body = new URLSearchParams()
+    body.set("grant_type", "authorization_code")
+    body.set("code", authToken)
+    body.set("redirect_uri", "http://localhost:4200/party")
+    const headers = {
+      Authorization:
+        "Basic ZDllZDQ3MWQyZGFlNGVjOGEyNmU3NzI1YmY2MmZhNzk6YWJkNWY3MjZlMDQ3NDU1ZDhmMGE3ODQxZTJjMzRkYmY=",
+      "Content-Type": "application/x-www-form-urlencoded",
+    }
+    const res = await this.httpService
+      .post("https://accounts.spotify.com/api/token", body, { headers })
+      .toPromise()
+    return res.data["access_token"]
+  }
+  public async getSpotifyUsername(token: string) {
     const res = await this.httpService
       .get("https://api.spotify.com/v1/me", {
         headers: {
@@ -34,9 +50,16 @@ export class PartyService {
     partyId: String,
   ) {
     const partyMember = { host: false, token, username }
-    const updatedParty = await this.partyModel.findByIdAndUpdate(partyId, {
-      $push: { partygoers: partyMember },
-    })
+    const updatedParty = await this.partyModel
+      .findByIdAndUpdate(
+        partyId,
+        {
+          $push: { partygoers: partyMember },
+        },
+        { new: true },
+      )
+      .exec()
+    console.log(updatedParty)
     return updatedParty
   }
 
