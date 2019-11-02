@@ -52,9 +52,15 @@ export class PartyController {
     return result
   }
 
-  @Get("/partytime/:id")
+  @Get("/tracks/:id")
   async getTopTracks(@Param("id") id) {
     const topTracks = await this.partyService.getPartyTracks(id)
     return topTracks
+  }
+
+  @Post("/playlist/:id")
+  async createPlaylist(@Param("id") id) {
+    const createdPlaylist = await this.partyService.partyTime(id)
+    return createdPlaylist
   }
 }

@@ -34,8 +34,15 @@ export class PartyService {
 
   async getTopTracks(partyId: string): Promise<any[]> {
     const res = (await this.http
-      .get(`${this.api}/partytime/${partyId}`)
+      .get(`${this.api}/tracks/${partyId}`)
       .toPromise()) as any[]
+    return res
+  }
+
+  async createPartyPlaylist(partyId: string) {
+    const res = await this.http
+      .post(`${this.api}/playlist/${partyId}`, {})
+      .toPromise()
     return res
   }
 }
