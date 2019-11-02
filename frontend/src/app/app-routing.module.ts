@@ -8,7 +8,7 @@ const routes: Routes = [
     component: PartyComponent,
   },
   {
-    path: "party/:partyName",
+    path: "party/:partyId",
     component: PartyComponent,
   },
   {

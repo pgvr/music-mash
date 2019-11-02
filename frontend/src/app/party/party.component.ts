@@ -29,12 +29,11 @@ export class PartyComponent implements OnInit {
     // check for url params
     const code = this.route.snapshot.queryParams["code"]
     let state = this.route.snapshot.queryParams["state"]
-    if (localStorage.getItem("partyId") && !code && !state) {
+    const partyId = this.route.snapshot.params["partyId"]
+    if (partyId) {
       // get by id from db
-      console.log("load from localstorage")
-      const res = await this.partyService.getPartyById(
-        localStorage.getItem("partyId"),
-      )
+      console.log("use existing id")
+      const res = await this.partyService.getPartyById(partyId)
       this.party = res[0] as Party
       console.log(this.party)
     } else if (state && code) {
@@ -46,9 +45,7 @@ export class PartyComponent implements OnInit {
           code,
         )
         this.party = res as Party
-        console.log(this.party)
-        localStorage.setItem("partyId", this.party._id)
-        this.router.navigateByUrl("/party")
+        this.router.navigateByUrl(`/party/${this.party._id}`)
       } else if (state.partyId) {
         console.log("update party")
         const res = await this.partyService.addMemberToParty(
@@ -56,9 +53,7 @@ export class PartyComponent implements OnInit {
           code,
         )
         this.party = res as Party
-        console.log(this.party)
-        localStorage.setItem("partyId", this.party._id)
-        this.router.navigateByUrl("/party")
+        this.router.navigateByUrl(`/party/${this.party._id}`)
       }
     }
     this.loading = false
