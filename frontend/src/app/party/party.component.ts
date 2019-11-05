@@ -82,7 +82,7 @@ export class PartyComponent implements OnInit {
     }
     window.location.href = `https://accounts.spotify.com/authorize?client_id=d9ed471d2dae4ec8a26e7725bf62fa79&show_dialog=true&response_type=code&redirect_uri=${
       environment.redirectUrl
-    }&scope=user-read-private%20user-read-email%20user-top-read%20playlist-modify-public&state=${JSON.stringify(
+    }&scope=user-read-private%20user-read-email%20user-top-read&state=${JSON.stringify(
       obj,
     )}`
   }
