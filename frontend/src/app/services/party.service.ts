@@ -49,4 +49,11 @@ export class PartyService {
       .post(`${this.api}/playlist`, { id: partyId, password })
       .toPromise()
   }
+
+  async analyzeTracks(partyId: string) {
+    const res = await this.http
+      .get(`${this.api}/analyze/${partyId}`)
+      .toPromise()
+    return res
+  }
 }

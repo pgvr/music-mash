@@ -81,4 +81,11 @@ export class PartyController {
       res.send(createdPlaylist)
     }
   }
+
+  @Get("/analyze/:id")
+  async getAnalyzedTracks(@Param("id") id) {
+    const topTracks = await this.partyService.getPartyTracks(id)
+    const analyzedTracks = await this.partyService.sortByDance(topTracks, id)
+    return analyzedTracks
+  }
 }

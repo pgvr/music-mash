@@ -123,4 +123,9 @@ export class PartyComponent implements OnInit {
         }
       })
   }
+
+  async analyzeTracks() {
+    const analyzedTracks = await this.partyService.analyzeTracks(this.party._id)
+    console.log(analyzedTracks)
+  }
 }
