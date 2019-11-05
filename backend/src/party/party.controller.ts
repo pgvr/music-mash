@@ -19,15 +19,11 @@ export class PartyController {
 
   @Post("/create")
   async createParty(@Body() partyCreationDTO: PartyCreationDTO) {
-    console.log("start create")
     const accessToken = await this.partyService.getAccessToken(
       partyCreationDTO.hostToken,
     )
-    console.log(accessToken)
     const username = await this.partyService.getSpotifyUsername(accessToken)
-    console.log(username)
     const hash = await this.partyService.hashPassword(partyCreationDTO.password)
-    console.log("hash: " + hash)
     const newParty: Party = {
       name: partyCreationDTO.partyName,
       password: hash,
@@ -40,7 +36,6 @@ export class PartyController {
       ],
     }
     const createdParty = await this.partyService.createParty(newParty)
-    console.log(createdParty)
     return createdParty
   }
 
@@ -82,7 +77,8 @@ export class PartyController {
     if (!createdPlaylist) {
       res.status(HttpStatus.UNAUTHORIZED).send()
     } else {
-      return createdPlaylist
+      console.log(createdPlaylist)
+      res.send(createdPlaylist)
     }
   }
 }

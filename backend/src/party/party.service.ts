@@ -64,7 +64,6 @@ export class PartyService {
         { new: true },
       )
       .exec()
-    console.log(updatedParty)
     return updatedParty
   }
 
@@ -88,20 +87,17 @@ export class PartyService {
       }
     }
     const playlistId = await this.createPartyPlaylist(party, host)
-    console.log("playlist id " + playlistId)
     const tracks = await this.getPartyTracks(partyId)
     let trackUris = []
     for (let i = 0; i < tracks.length; i++) {
       trackUris.push(tracks[i].uri as String)
     }
-    console.log(trackUris)
     const updatedParty = await this.partyModel
       .findByIdAndUpdate(partyId, {
         tracks: trackUris,
       })
       .exec()
     const res = await this.addTracksToPlaylist(playlistId, trackUris, host)
-    console.log("add res " + res)
     return res
   }
 
@@ -110,7 +106,6 @@ export class PartyService {
     const body = {
       uris: trackUris,
     }
-    console.log(body)
     const res = await this.httpService
       .put(url, body, {
         headers: {
@@ -120,14 +115,34 @@ export class PartyService {
         },
       })
       .toPromise()
-    console.log(res.data)
     return res.data
   }
 
   public async createPartyPlaylist(party: Party, host: any) {
+    // get playlist with party.name
+    // if exists, return id
+    // else create new
+    const playlistRequest = await this.httpService
+      .get("https://api.spotify.com/v1/me/playlists", {
+        headers: {
+          Authorization: `Bearer ${host.token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+      .toPromise()
+    const existingPlaylists = playlistRequest.data.items
+    for (let i = 0; i < existingPlaylists.length; i++) {
+      const playlist = existingPlaylists[i]
+      if (playlist.name === `${party.name} - Music Mash`) {
+        console.log("playlist already exists, returning id")
+        return playlist.id
+      }
+    }
+    // This is only executed if no playlist with the name exists
     const url = `https://api.spotify.com/v1/users/${host.username}/playlists`
     const body = {
-      name: party.name,
+      name: `${party.name} - Music Mash`,
       description: "Created via Music Mash",
     }
     const res = await this.httpService

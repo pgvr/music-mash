@@ -10,7 +10,7 @@ export class PartyService {
   constructor(private http: HttpClient) {}
 
   async getPartyById(partyId: string) {
-    const res = this.http.get(`${this.api}/${partyId}`).toPromise()
+    const res = await this.http.get(`${this.api}/${partyId}`).toPromise()
     return res
   }
 
@@ -24,16 +24,16 @@ export class PartyService {
       hostToken,
       password: partyPassword,
     }
-    const res = this.http.post(`${this.api}/create`, data).toPromise()
+    const res = await this.http.post(`${this.api}/create`, data).toPromise()
     return res
   }
 
-  addMemberToParty(partyId: string, memberToken: string) {
+  async addMemberToParty(partyId: string, memberToken: string) {
     const data = {
       partyId,
       memberToken,
     }
-    const res = this.http.post(`${this.api}/update`, data).toPromise()
+    const res = await this.http.post(`${this.api}/update`, data).toPromise()
     return res
   }
 
@@ -45,9 +45,8 @@ export class PartyService {
   }
 
   async createPartyPlaylist(partyId: string, password: string) {
-    const res = await this.http
+    return await this.http
       .post(`${this.api}/playlist`, { id: partyId, password })
       .toPromise()
-    return res
   }
 }

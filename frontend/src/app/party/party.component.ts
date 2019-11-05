@@ -95,10 +95,13 @@ export class PartyComponent implements OnInit {
     this.router.navigateByUrl("/party")
   }
 
+  async getTopTracks() {
+    const topTracks = await this.partyService.getTopTracks(this.party._id)
+    console.log(topTracks)
+    this.tracks = topTracks
+  }
+
   async partyTime() {
-    // const topTracks = await this.partyService.getTopTracks(this.party._id)
-    // console.log(topTracks)
-    // this.tracks = topTracks
     this.dialogService
       .open(PasswordDialogComponent)
       .onClose.subscribe(async password => {
