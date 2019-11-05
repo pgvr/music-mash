@@ -11,14 +11,16 @@ import {
   NbIconModule,
   NbInputModule,
   NbCardModule,
+  NbDialogModule,
 } from "@nebular/theme"
 import { NbEvaIconsModule } from "@nebular/eva-icons"
 import { PartyComponent } from "./party/party.component"
 import { FormsModule } from "@angular/forms"
 import { HttpClientModule } from "@angular/common/http"
+import { PasswordDialogComponent } from "./password-dialog/password-dialog.component"
 
 @NgModule({
-  declarations: [AppComponent, PartyComponent],
+  declarations: [AppComponent, PartyComponent, PasswordDialogComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -29,11 +31,13 @@ import { HttpClientModule } from "@angular/common/http"
     NbIconModule,
     NbInputModule,
     NbCardModule,
+    NbDialogModule.forRoot(),
     FormsModule,
     HttpClientModule,
     NbEvaIconsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
+  entryComponents: [PasswordDialogComponent],
 })
 export class AppModule {}

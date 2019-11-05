@@ -5,6 +5,7 @@ import { Model } from "mongoose"
 import { config } from "dotenv"
 import { resolve } from "path"
 config({ path: resolve(__dirname, "../../../.env") })
+import * as bcrypt from "bcrypt"
 const redirectUri = process.env.REDIRECT_URI || ""
 
 @Injectable()
@@ -72,9 +73,12 @@ export class PartyService {
     return party
   }
 
-  public async partyTime(partyId: string) {
+  public async partyTime(partyId: string, password: string) {
     let party = await this.getPartyById(partyId)
     party = party[0]
+    if (!(await this.checkPassword(password, party.password))) {
+      return null
+    }
     let host
     for (let i = 0; i < party.partygoers.length; i++) {
       const member = party.partygoers[i]
@@ -86,24 +90,29 @@ export class PartyService {
     const playlistId = await this.createPartyPlaylist(party, host)
     console.log("playlist id " + playlistId)
     const tracks = await this.getPartyTracks(partyId)
-    console.log("tracks " + tracks)
-    const res = await this.addTracksToPlaylist(playlistId, tracks, host)
+    let trackUris = []
+    for (let i = 0; i < tracks.length; i++) {
+      trackUris.push(tracks[i].uri as String)
+    }
+    console.log(trackUris)
+    const updatedParty = await this.partyModel
+      .findByIdAndUpdate(partyId, {
+        tracks: trackUris,
+      })
+      .exec()
+    const res = await this.addTracksToPlaylist(playlistId, trackUris, host)
     console.log("add res " + res)
     return res
   }
 
-  public async addTracksToPlaylist(playlistId: string, tracks, host) {
+  public async addTracksToPlaylist(playlistId: string, trackUris, host) {
     const url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`
-    let uris = []
-    for (let i = 0; i < tracks.length; i++) {
-      uris.push(tracks[i].uri)
-    }
     const body = {
-      uris,
+      uris: trackUris,
     }
     console.log(body)
     const res = await this.httpService
-      .post(url, body, {
+      .put(url, body, {
         headers: {
           Authorization: `Bearer ${host.token}`,
           Accept: "application/json",
@@ -158,5 +167,16 @@ export class PartyService {
       })
       .toPromise()
     return res.data["items"]
+  }
+
+  public async hashPassword(clearPassword: string): Promise<string> {
+    return await bcrypt.hash(clearPassword, 10)
+  }
+
+  public async checkPassword(
+    clearPassword: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    return await bcrypt.compare(clearPassword, hashedPassword)
   }
 }

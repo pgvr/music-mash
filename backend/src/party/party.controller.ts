@@ -1,8 +1,17 @@
-import { Controller, Post, Body, Get, Param } from "@nestjs/common"
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Res,
+  HttpStatus,
+} from "@nestjs/common"
 import { PartyService } from "./party.service"
 import { PartyCreationDTO } from "./interfaces/partyCreation.dto"
 import { Party } from "./interfaces/party.interface"
 import { PartyMemberDTO } from "./interfaces/partyMember.dto"
+import { Response } from "express"
 
 @Controller("party")
 export class PartyController {
@@ -17,8 +26,11 @@ export class PartyController {
     console.log(accessToken)
     const username = await this.partyService.getSpotifyUsername(accessToken)
     console.log(username)
+    const hash = await this.partyService.hashPassword(partyCreationDTO.password)
+    console.log("hash: " + hash)
     const newParty: Party = {
       name: partyCreationDTO.partyName,
+      password: hash,
       partygoers: [
         {
           host: true,
@@ -58,9 +70,19 @@ export class PartyController {
     return topTracks
   }
 
-  @Post("/playlist/:id")
-  async createPlaylist(@Param("id") id) {
-    const createdPlaylist = await this.partyService.partyTime(id)
-    return createdPlaylist
+  @Post("/playlist")
+  async createPlaylist(
+    @Body() body: { id: string; password: string },
+    @Res() res: Response,
+  ) {
+    const createdPlaylist = await this.partyService.partyTime(
+      body.id,
+      body.password,
+    )
+    if (!createdPlaylist) {
+      res.status(HttpStatus.UNAUTHORIZED).send()
+    } else {
+      return createdPlaylist
+    }
   }
 }

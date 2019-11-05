@@ -14,10 +14,15 @@ export class PartyService {
     return res
   }
 
-  async createNewParty(partyName: string, hostToken: string) {
+  async createNewParty(
+    partyName: string,
+    hostToken: string,
+    partyPassword: string,
+  ) {
     const data = {
       partyName,
       hostToken,
+      password: partyPassword,
     }
     const res = this.http.post(`${this.api}/create`, data).toPromise()
     return res
@@ -39,9 +44,9 @@ export class PartyService {
     return res
   }
 
-  async createPartyPlaylist(partyId: string) {
+  async createPartyPlaylist(partyId: string, password: string) {
     const res = await this.http
-      .post(`${this.api}/playlist/${partyId}`, {})
+      .post(`${this.api}/playlist`, { id: partyId, password })
       .toPromise()
     return res
   }

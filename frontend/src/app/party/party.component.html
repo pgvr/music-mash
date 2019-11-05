@@ -1,16 +1,27 @@
 <ng-container *ngIf="!loading">
   <nb-card *ngIf="!party">
     <nb-card-body class="party-card">
+      <label for="nameInput">Name</label>
       <input
+        id="nameInput"
         nbInput
         fullwidth
         fieldSize="giant"
         placeholder="Partyname..."
         [(ngModel)]="partyNameModel"
       />
+      <label for="passwordInput">Password</label>
+      <input
+        name="passwordInput"
+        nbInput
+        fullwidth
+        fieldSize="giant"
+        placeholder="Password..."
+        [(ngModel)]="partyPasswordModel"
+      />
       <button
         status="success"
-        [disabled]="partyNameModel === ''"
+        [disabled]="partyNameModel === '' || partyPasswordModel === ''"
         nbButton
         (click)="authenticateHost()"
       >
@@ -33,7 +44,7 @@
   </nb-card>
 </ng-container>
 
-<button status="success" nbButton (click)="partyTime()">
+<button status="success" nbButton (click)="partyTime()" *ngIf="party">
   PARTY TIME
 </button>
 <button status="warning" nbButton (click)="startNewParty()">

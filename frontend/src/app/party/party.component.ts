@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from "@angular/router"
 import { PartyService } from "../services/party.service"
 import { Party } from "../interfaces/party"
 import { environment } from "../../environments/environment"
+import { NbDialogService } from "@nebular/theme"
+import { PasswordDialogComponent } from "../password-dialog/password-dialog.component"
 
 @Component({
   selector: "app-party",
@@ -11,6 +13,7 @@ import { environment } from "../../environments/environment"
 })
 export class PartyComponent implements OnInit {
   partyNameModel = ""
+  partyPasswordModel = ""
   loading = true
   party: Party
   tracks = []
@@ -19,6 +22,7 @@ export class PartyComponent implements OnInit {
     private route: ActivatedRoute,
     private partyService: PartyService,
     private router: Router,
+    private dialogService: NbDialogService,
   ) {}
 
   ngOnInit() {
@@ -43,6 +47,7 @@ export class PartyComponent implements OnInit {
         const res = await this.partyService.createNewParty(
           state.partyName,
           code,
+          state.partyPassword,
         )
         this.party = res as Party
         this.router.navigateByUrl(`/party/${this.party._id}`)
@@ -62,6 +67,7 @@ export class PartyComponent implements OnInit {
   authenticateHost() {
     const obj = {
       partyName: this.partyNameModel,
+      partyPassword: this.partyPasswordModel,
     }
     window.location.href = `https://accounts.spotify.com/authorize?client_id=d9ed471d2dae4ec8a26e7725bf62fa79&show_dialog=true&response_type=code&redirect_uri=${
       environment.redirectUrl
@@ -85,12 +91,33 @@ export class PartyComponent implements OnInit {
     localStorage.clear()
     this.party = null
     this.partyNameModel = ""
+    this.partyPasswordModel = ""
+    this.router.navigateByUrl("/party")
   }
 
   async partyTime() {
-    const topTracks = await this.partyService.getTopTracks(this.party._id)
-    console.log(topTracks)
-    this.tracks = topTracks
-    await this.partyService.createPartyPlaylist(this.party._id)
+    // const topTracks = await this.partyService.getTopTracks(this.party._id)
+    // console.log(topTracks)
+    // this.tracks = topTracks
+    this.dialogService
+      .open(PasswordDialogComponent)
+      .onClose.subscribe(async password => {
+        console.log(password)
+        if (password) {
+          this.partyService
+            .createPartyPlaylist(this.party._id, password)
+            .then(res => {
+              console.log("got response from playlist creation")
+              console.log(res)
+            })
+            .catch(err => {
+              console.log("error creating playlist")
+              console.log(err)
+            })
+        } else {
+          // no password provided
+          console.log("no password provided")
+        }
+      })
   }
 }
