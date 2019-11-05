@@ -1,8 +1,44 @@
+.wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+
+  .button-list {
+    max-width: 500px;
+    button {
+      margin-bottom: 20px;
+    }
+  }
+  nb-card {
+    max-width: 500px;
+    min-width: 300px;
+    h1 {
+      word-break: break-all;
+    }
+  }
+}
+
 .party-card {
   display: flex;
   flex-direction: column;
   align-items: center;
+  label {
+    margin-bottom: 5px;
+  }
   input {
+    margin-bottom: 30px;
+  }
+}
+
+.member-list {
+  margin-bottom: 10px;
+}
+
+.track-list {
+  h1 {
+    margin: 0;
     margin-bottom: 10px;
   }
+  padding: 30px;
 }

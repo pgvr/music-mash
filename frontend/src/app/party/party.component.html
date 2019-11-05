@@ -1,60 +1,84 @@
-<ng-container *ngIf="!loading">
-  <nb-card *ngIf="!party">
+<div class="wrapper">
+  <nb-card [nbSpinner]="loading" nbSpinnerStatus="primary">
     <nb-card-body class="party-card">
-      <label for="nameInput">Name</label>
-      <input
-        id="nameInput"
-        nbInput
-        fullwidth
-        fieldSize="giant"
-        placeholder="Partyname..."
-        [(ngModel)]="partyNameModel"
-      />
-      <label for="passwordInput">Password</label>
-      <input
-        name="passwordInput"
-        nbInput
-        fullwidth
-        fieldSize="giant"
-        placeholder="Password..."
-        [(ngModel)]="partyPasswordModel"
-      />
-      <button
-        status="success"
-        [disabled]="partyNameModel === '' || partyPasswordModel === ''"
-        nbButton
-        (click)="authenticateHost()"
-      >
-        Connect to Spotify
-      </button>
+      <ng-container *ngIf="!party">
+        <h1>Create a New Party</h1>
+        <label for="nameInput">Party Name</label>
+        <input
+          id="nameInput"
+          nbInput
+          fullwidth
+          fieldSize="giant"
+          placeholder="Party Name..."
+          [(ngModel)]="partyNameModel"
+        />
+        <label for="passwordInput">Party Password</label>
+        <input
+          name="passwordInput"
+          nbInput
+          fullwidth
+          fieldSize="giant"
+          placeholder="Password..."
+          [(ngModel)]="partyPasswordModel"
+        />
+        <button
+          status="success"
+          [disabled]="partyNameModel === '' || partyPasswordModel === ''"
+          nbButton
+          (click)="authenticateHost()"
+        >
+          Connect to Spotify
+        </button>
+      </ng-container>
+      <ng-container *ngIf="party">
+        <h1>{{ party.name }}</h1>
+        <div *ngFor="let member of party.partygoers" class="member-list">
+          {{ member.username }}, Host: {{ member.host }}
+        </div>
+        <button nbButton status="primary" (click)="addMember()">
+          Add Member
+        </button>
+      </ng-container>
     </nb-card-body>
   </nb-card>
-  <nb-card *ngIf="party">
-    <h1>{{ party.name }}</h1>
-    <div *ngFor="let member of party.partygoers">
-      {{ member.username }}, Host: {{ member.host }}
-    </div>
-    <button nbButton status="primary" (click)="addMember()">Add Member</button>
-  </nb-card>
-  <nb-card *ngIf="tracks.length > 0">
-    <h1>Top Tracks</h1>
-    <div *ngFor="let track of tracks">
-      {{ track.name }} by {{ track.artists[0].name }}
-    </div>
-  </nb-card>
-</ng-container>
 
-<button status="success" nbButton (click)="partyTime()" *ngIf="party">
-  PARTY TIME
-</button>
-<button status="primary" nbButton (click)="getTopTracks()" *ngIf="party">
-  TOP TRACKS
-</button>
-<button status="warning" nbButton (click)="analyzeTracks()" *ngIf="party">
-  Analyze Tracks
-</button>
-<button status="danger" nbButton (click)="startNewParty()">
-  New Party
-</button>
+  <div *ngIf="party" class="button-list">
+    <button
+      status="success"
+      nbButton
+      fullWidth
+      (click)="partyTime()"
+      [nbSpinner]="actionLoading"
+    >
+      PARTY TIME
+    </button>
+    <button
+      status="primary"
+      nbButton
+      fullWidth
+      (click)="getTopTracks()"
+      [nbSpinner]="actionLoading"
+    >
+      TOP TRACKS
+    </button>
+    <button
+      status="warning"
+      nbButton
+      fullWidth
+      (click)="analyzeTracks()"
+      [nbSpinner]="actionLoading"
+    >
+      Analyze Tracks
+    </button>
+    <button status="danger" nbButton fullWidth (click)="startNewParty()">
+      New Party
+    </button>
+  </div>
+</div>
 
-<ng-container *ngIf="loading">Loading ...</ng-container>
+<nb-card *ngIf="tracks.length > 0" class="track-list">
+  <h1>Top Tracks</h1>
+  <div *ngFor="let track of tracks">
+    {{ track.name }} by {{ track.artists[0].name }}
+  </div>
+</nb-card>

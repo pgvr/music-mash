@@ -12,6 +12,9 @@ import {
   NbInputModule,
   NbCardModule,
   NbDialogModule,
+  NbToastrModule,
+  NbSpinnerModule,
+  NbGlobalPhysicalPosition,
 } from "@nebular/theme"
 import { NbEvaIconsModule } from "@nebular/eva-icons"
 import { PartyComponent } from "./party/party.component"
@@ -32,6 +35,8 @@ import { PasswordDialogComponent } from "./password-dialog/password-dialog.compo
     NbInputModule,
     NbCardModule,
     NbDialogModule.forRoot(),
+    NbToastrModule.forRoot({ position: NbGlobalPhysicalPosition.BOTTOM_RIGHT }),
+    NbSpinnerModule,
     FormsModule,
     HttpClientModule,
     NbEvaIconsModule,
