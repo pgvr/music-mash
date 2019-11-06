@@ -89,33 +89,125 @@ export class PartyService {
     const playlistId = await this.createPartyPlaylist(party, host)
     let tracks = await this.getPartyTracks(partyId)
     let trackUris = []
+    let dbTracks = []
+    const metrics = await this.getTrackAnalysis(tracks, partyId)
+    const artistsWithInfo = await this.getArtistInfo(tracks, partyId)
     for (let i = 0; i < tracks.length; i++) {
-      trackUris.push(tracks[i].uri as String)
+      const track = tracks[i]
+      const metric = metrics[i]
+      const artist = artistsWithInfo[i]
+      trackUris.push(track.uri as String)
+      if (track.uri !== metric.uri) {
+        return "uris of track and metric didnt match"
+      }
+      if (track.artists[0].id !== artist.id) {
+        return "artist ids dont match"
+      }
+
+      dbTracks.push({
+        id: track.id,
+        uri: track.uri,
+        name: track.name,
+        popularity: track.popularity,
+        album: {
+          name: track.album.name,
+          releaseDate: track.album.release_date,
+          id: track.album.id,
+          uri: track.album.uri,
+        },
+        artist: {
+          name: artist.name,
+          id: artist.id,
+          uri: artist.uri,
+          genre: artist.genres,
+          popularity: artist.popularity,
+        },
+        acousticness: metric.acousticness,
+        danceability: metric.danceability,
+        duration_ms: metric.duration_ms,
+        energy: metric.energy,
+        instrumentalness: metric.instrumentalness,
+        key: metric.key,
+        liveness: metric.liveness,
+        loudness: metric.loudness,
+        mode: metric.mode,
+        speechiness: metric.speechiness,
+        tempo: metric.tempo,
+        time_signature: metric.time_signature,
+        valence: metric.valence,
+      })
     }
     const updatedParty = await this.partyModel
       .findByIdAndUpdate(partyId, {
-        tracks: trackUris,
+        tracks: dbTracks,
       })
       .exec()
     const res = await this.addTracksToPlaylist(playlistId, trackUris, host)
     return res
   }
 
+  public async getArtistInfo(tracks, partyId: string) {
+    let party = await this.getPartyById(partyId)
+    party = party[0]
+    let artists = []
+    for (let i = 0; i < tracks.length; i += 50) {
+      let url = "https://api.spotify.com/v1/artists?ids="
+      const partialTracks = tracks.slice(i, i + 50)
+      for (let j = 0; j < partialTracks.length; j++) {
+        url += partialTracks[j].artists[0].id
+        if (j < partialTracks.length - 1) {
+          url += ","
+        }
+      }
+      const artistResponse = await this.httpService
+        .get(url, {
+          headers: {
+            Authorization: `Bearer ${
+              party.partygoers.find(dude => dude.host === true).token
+            }`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        })
+        .toPromise()
+      artists = [...artists, ...artistResponse.data.artists]
+    }
+    return artists
+  }
+
   public async addTracksToPlaylist(playlistId: string, trackUris, host) {
     const url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`
-    const body = {
-      uris: trackUris,
-    }
-    const res = await this.httpService
-      .put(url, body, {
-        headers: {
-          Authorization: `Bearer ${host.token}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
+    // Empty playlist
+    await this.httpService
+      .put(
+        url,
+        { uris: [] },
+        {
+          headers: {
+            Authorization: `Bearer ${host.token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
         },
-      })
+      )
       .toPromise()
-    return res.data
+    // 100 tracks is max per request, divide it
+    for (let i = 0; i < trackUris.length; i += 100) {
+      const partialTrackUris = trackUris.slice(i, i + 100)
+      const body = {
+        uris: partialTrackUris,
+      }
+      await this.httpService
+        .post(url, body, {
+          headers: {
+            Authorization: `Bearer ${host.token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        })
+        .toPromise()
+    }
+    return true
   }
 
   public async createPartyPlaylist(party: Party, host: any) {
@@ -184,17 +276,17 @@ export class PartyService {
     return res.data["items"]
   }
 
-  public async sortByDance(trackUris: any[], partyId: string) {
+  public async getTrackAnalysis(tracks: any[], partyId: string) {
     let party = await this.getPartyById(partyId)
     party = party[0]
     let analyzedTracks = []
     // max 100 tracks per call
-    for (let i = 0; i < trackUris.length; i += 100) {
-      const tracks = trackUris.slice(i, i + 99)
+    for (let i = 0; i < tracks.length; i += 100) {
+      const partialTracks = tracks.slice(i, i + 100)
       let url = `https://api.spotify.com/v1/audio-features?ids=`
-      for (let j = 0; j < tracks.length; j++) {
-        url += tracks[j].id
-        if (j < tracks.length - 1) {
+      for (let j = 0; j < partialTracks.length; j++) {
+        url += partialTracks[j].id
+        if (j < partialTracks.length - 1) {
           url += ","
         }
       }
@@ -211,9 +303,6 @@ export class PartyService {
         .toPromise()
       analyzedTracks = [...analyzedTracks, ...res.data.audio_features]
     }
-    analyzedTracks.sort(function(a, b) {
-      return b.danceability - a.danceability
-    })
     return analyzedTracks
   }
 

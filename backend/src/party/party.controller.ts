@@ -77,7 +77,6 @@ export class PartyController {
     if (!createdPlaylist) {
       res.status(HttpStatus.UNAUTHORIZED).send()
     } else {
-      console.log(createdPlaylist)
       res.send(createdPlaylist)
     }
   }
@@ -85,7 +84,10 @@ export class PartyController {
   @Get("/analyze/:id")
   async getAnalyzedTracks(@Param("id") id) {
     const topTracks = await this.partyService.getPartyTracks(id)
-    const analyzedTracks = await this.partyService.sortByDance(topTracks, id)
+    const analyzedTracks = await this.partyService.getTrackAnalysis(
+      topTracks,
+      id,
+    )
     return analyzedTracks
   }
 }
