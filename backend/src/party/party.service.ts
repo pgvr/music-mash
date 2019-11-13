@@ -196,11 +196,11 @@ export class PartyService {
     // const targetLoudness = quantile(loudnessValues, median)
     // url += `&min_loudness=${minLoudness}&max_loudness=${maxLoudness}&target_loudness=${targetLoudness}`
 
-    const speechinessValues = tracks.map(track => track.speechiness)
-    const minSpeechiness = quantile(speechinessValues, lowerQuantile)
-    const maxSpeechiness = quantile(speechinessValues, upperQuantile)
-    const targetSpeechiness = quantile(speechinessValues, median)
-    url += `&min_speechiness=${minSpeechiness}&max_speechiness=${maxSpeechiness}&target_speechiness=${targetSpeechiness}`
+    // const speechinessValues = tracks.map(track => track.speechiness)
+    // const minSpeechiness = quantile(speechinessValues, lowerQuantile)
+    // const maxSpeechiness = quantile(speechinessValues, upperQuantile)
+    // const targetSpeechiness = quantile(speechinessValues, median)
+    // url += `&min_speechiness=${minSpeechiness}&max_speechiness=${maxSpeechiness}&target_speechiness=${targetSpeechiness}`
 
     // const tempoValues = tracks.map(track => track.tempo)
     // const minTempo = quantile(tempoValues, lowerQuantile)
@@ -214,12 +214,18 @@ export class PartyService {
     const targetValence = quantile(valenceValues, median)
     url += `&min_valence=${minValence}&max_valence=${maxValence}&target_valence=${targetValence}`
 
-    const artistSeeds = tracks.slice(0, 5).map(track => track.artist.id)
+    // max 5 seeds
     url += "&seed_artists="
-    for (let i = 0; i < artistSeeds.length; i++) {
-      url += artistSeeds[i]
-      if (i < artistSeeds.length - 1) {
-        url += "%2C"
+    const interval = Math.ceil(tracks.length / 5)
+    for (let i = 0; i < tracks.length; i++) {
+      const index = i * interval
+      console.log(index)
+      if (index < tracks.length) {
+        url += tracks[index].artist.id
+        console.log(tracks[index].artist.id)
+        url += i < 4 ? "," : ""
+      } else {
+        break
       }
     }
 
@@ -228,6 +234,8 @@ export class PartyService {
         headers: { Authorization: `Bearer ${host.token}` },
       })
       .toPromise()
+    console.log(url)
+    console.log("track length: " + data.tracks.length)
     return data.tracks
   }
 
