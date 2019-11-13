@@ -7,6 +7,7 @@ import { resolve } from "path"
 config({ path: resolve(__dirname, "../../../.env") })
 import * as bcrypt from "bcrypt"
 const redirectUri = process.env.REDIRECT_URI || ""
+import * as quantile from "compute-quantile"
 
 @Injectable()
 export class PartyService {
@@ -124,17 +125,17 @@ export class PartyService {
         },
         acousticness: metric.acousticness,
         danceability: metric.danceability,
-        duration_ms: metric.duration_ms,
         energy: metric.energy,
         instrumentalness: metric.instrumentalness,
-        key: metric.key,
         liveness: metric.liveness,
         loudness: metric.loudness,
-        mode: metric.mode,
         speechiness: metric.speechiness,
         tempo: metric.tempo,
-        time_signature: metric.time_signature,
         valence: metric.valence,
+        duration_ms: metric.duration_ms,
+        key: metric.key,
+        mode: metric.mode,
+        time_signature: metric.time_signature,
       })
     }
     const updatedParty = await this.partyModel
@@ -142,8 +143,92 @@ export class PartyService {
         tracks: dbTracks,
       })
       .exec()
-    const res = await this.addTracksToPlaylist(playlistId, trackUris, host)
+    const partyTracks = await this.getSuggestedTracks(dbTracks, host)
+    const res = await this.addTracksToPlaylist(
+      playlistId,
+      partyTracks.map(track => track.uri),
+      host,
+    )
     return res
+  }
+
+  public async getSuggestedTracks(tracks, host) {
+    let url = "https://api.spotify.com/v1/recommendations?"
+    const limit = 50
+    const lowerQuantile = 0.25
+    const upperQuantile = 0.75
+    const median = 0.5
+    url += `limit=${limit}`
+
+    const acousticValues = tracks.map(track => track.acousticness)
+    const minAcousticness = quantile(acousticValues, lowerQuantile)
+    const maxAcousticness = quantile(acousticValues, upperQuantile)
+    const targetAcousticness = quantile(acousticValues, median)
+    url += `&min_acousticness=${minAcousticness}&max_acousticness=${maxAcousticness}&target_acousticness=${targetAcousticness}`
+
+    const danceabilityValues = tracks.map(track => track.danceability)
+    const minDanceability = quantile(danceabilityValues, lowerQuantile)
+    const maxDanceability = quantile(danceabilityValues, upperQuantile)
+    const targetDanceability = quantile(danceabilityValues, median)
+    url += `&min_danceability=${minDanceability}&max_danceability=${maxDanceability}&target_danceability=${targetDanceability}`
+
+    const energyValues = tracks.map(track => track.energy)
+    const minEnergy = quantile(energyValues, lowerQuantile)
+    const maxEnergy = quantile(energyValues, upperQuantile)
+    const targetEnergy = quantile(energyValues, median)
+    url += `&min_energy=${minEnergy}&max_energy=${maxEnergy}&target_energy=${targetEnergy}`
+
+    const instrumentalnessValues = tracks.map(track => track.instrumentalness)
+    const minInstrumentalness = quantile(instrumentalnessValues, lowerQuantile)
+    const maxInstrumentalness = quantile(instrumentalnessValues, upperQuantile)
+    const targetInstrumentalness = quantile(instrumentalnessValues, median)
+    url += `&min_instrumentalness=${minInstrumentalness}&max_instrumentalness=${maxInstrumentalness}&target_instrumentalness=${targetInstrumentalness}`
+
+    // const livenessValues = tracks.map(track => track.liveness)
+    // const minLiveness = quantile(livenessValues, upperQuantile)
+    // const maxLiveness = quantile(livenessValues, upperQuantile)
+    // const targetLiveness = quantile(livenessValues, median)
+    // url += `&min_liveness=${minLiveness}&max_liveness=${maxLiveness}&target_liveness=${targetLiveness}`
+
+    // const loudnessValues = tracks.map(track => track.loudness)
+    // const minLoudness = quantile(loudnessValues, lowerQuantile)
+    // const maxLoudness = quantile(loudnessValues, upperQuantile)
+    // const targetLoudness = quantile(loudnessValues, median)
+    // url += `&min_loudness=${minLoudness}&max_loudness=${maxLoudness}&target_loudness=${targetLoudness}`
+
+    const speechinessValues = tracks.map(track => track.speechiness)
+    const minSpeechiness = quantile(speechinessValues, lowerQuantile)
+    const maxSpeechiness = quantile(speechinessValues, upperQuantile)
+    const targetSpeechiness = quantile(speechinessValues, median)
+    url += `&min_speechiness=${minSpeechiness}&max_speechiness=${maxSpeechiness}&target_speechiness=${targetSpeechiness}`
+
+    // const tempoValues = tracks.map(track => track.tempo)
+    // const minTempo = quantile(tempoValues, lowerQuantile)
+    // const maxTempo = quantile(tempoValues, upperQuantile)
+    // const targetTempo = quantile(tempoValues, median)
+    // url += `&min_tempo=${minTempo}&max_tempo=${maxTempo}&target_tempo=${targetTempo}`
+
+    const valenceValues = tracks.map(track => track.valence)
+    const minValence = quantile(valenceValues, lowerQuantile)
+    const maxValence = quantile(valenceValues, upperQuantile)
+    const targetValence = quantile(valenceValues, median)
+    url += `&min_valence=${minValence}&max_valence=${maxValence}&target_valence=${targetValence}`
+
+    const artistSeeds = tracks.slice(0, 5).map(track => track.artist.id)
+    url += "&seed_artists="
+    for (let i = 0; i < artistSeeds.length; i++) {
+      url += artistSeeds[i]
+      if (i < artistSeeds.length - 1) {
+        url += "%2C"
+      }
+    }
+
+    const { data } = await this.httpService
+      .get(url, {
+        headers: { Authorization: `Bearer ${host.token}` },
+      })
+      .toPromise()
+    return data.tracks
   }
 
   public async getArtistInfo(tracks, partyId: string) {
