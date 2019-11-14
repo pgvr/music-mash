@@ -118,6 +118,8 @@ export class PartyService {
         break
       }
     }
+    console.log(party)
+    console.log(host)
     const playlistId = await this.createPartyPlaylist(party, host)
     console.log("playlist id" + playlistId)
     let tracks = await this.getPartyTracks(partyId)
