@@ -41,7 +41,7 @@ export class PartyService {
         },
       })
       .toPromise()
-    const displayName = res.data["display_name"]
+    const displayName = res.data["id"]
     return displayName
   }
 
