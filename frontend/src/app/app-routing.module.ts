@@ -1,8 +1,13 @@
 import { NgModule } from "@angular/core"
 import { Routes, RouterModule } from "@angular/router"
 import { PartyComponent } from "./party/party.component"
+import { PartyCreationComponent } from "./party-creation/party-creation.component"
 
 const routes: Routes = [
+  {
+    path: "",
+    component: PartyCreationComponent,
+  },
   {
     path: "party",
     component: PartyComponent,
@@ -12,8 +17,8 @@ const routes: Routes = [
     component: PartyComponent,
   },
   {
-    path: "",
-    redirectTo: "/party",
+    path: "**",
+    redirectTo: "/",
     pathMatch: "full",
   },
 ]

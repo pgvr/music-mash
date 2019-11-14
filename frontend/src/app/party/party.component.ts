@@ -12,8 +12,6 @@ import { PasswordDialogComponent } from "../password-dialog/password-dialog.comp
   styleUrls: ["./party.component.scss"],
 })
 export class PartyComponent implements OnInit {
-  partyNameModel = ""
-  partyPasswordModel = ""
   actionLoading = false
   loading = true
   party: Party
@@ -48,7 +46,7 @@ export class PartyComponent implements OnInit {
         (now.getTime() - created.getTime()) / (1000 * 3600)
       if (differenceInHours >= 1) {
         // party too old
-        this.startNewParty()
+        this.router.navigateByUrl("/")
         this.toastrService.info(
           "Unfortunately parties can only be used within one hour of creation. Please create a new one.",
           "Party Too Old",
@@ -72,6 +70,8 @@ export class PartyComponent implements OnInit {
         this.party = res as Party
         this.router.navigateByUrl(`/party/${this.party._id}`)
       }
+    } else {
+      this.router.navigateByUrl("/")
     }
     this.loading = false
   }
@@ -86,18 +86,6 @@ export class PartyComponent implements OnInit {
     } else {
       this.router.navigateByUrl("/party")
     }
-  }
-
-  authenticateHost() {
-    const obj = {
-      partyName: this.partyNameModel,
-      partyPassword: this.partyPasswordModel,
-    }
-    window.location.href = `https://accounts.spotify.com/authorize?client_id=d9ed471d2dae4ec8a26e7725bf62fa79&show_dialog=true&response_type=code&redirect_uri=${
-      environment.redirectUrl
-    }&scope=user-read-private%20user-read-email%20user-top-read%20playlist-modify-public&state=${JSON.stringify(
-      obj,
-    )}`
   }
 
   addMember() {
@@ -150,26 +138,6 @@ export class PartyComponent implements OnInit {
     document.body.removeChild(dummy)
   }
 
-  startNewParty() {
-    localStorage.clear()
-    this.party = null
-    this.partyNameModel = ""
-    this.partyPasswordModel = ""
-    this.router.navigateByUrl("/party")
-  }
-
-  async getTopTracks() {
-    this.actionLoading = true
-    try {
-      const topTracks = await this.partyService.getTopTracks(this.party._id)
-      this.tracks = topTracks as any[]
-      this.toastrService.success("Showing top tracks", "Tracks")
-    } catch (error) {
-      this.handleError(error)
-    }
-    this.actionLoading = false
-  }
-
   async partyTime() {
     this.actionLoading = true
     try {
@@ -188,19 +156,6 @@ export class PartyComponent implements OnInit {
       }
 
       this.actionLoading = false
-    } catch (error) {
-      this.handleError(error)
-    }
-  }
-
-  async analyzeTracks() {
-    this.actionLoading = true
-    try {
-      const analyzedTracks = await this.partyService.analyzeTracks(
-        this.party._id,
-      )
-      this.actionLoading = false
-      console.log(analyzedTracks)
     } catch (error) {
       this.handleError(error)
     }

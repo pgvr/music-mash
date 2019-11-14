@@ -1,93 +1,42 @@
 <div class="wrapper">
-  <nb-card [nbSpinner]="loading" nbSpinnerStatus="primary">
-    <nb-card-body class="party-card">
-      <ng-container *ngIf="!party">
-        <h1>Create a New Party</h1>
-        <label for="nameInput">Party Name</label>
-        <input
-          id="nameInput"
-          nbInput
-          fullwidth
-          fieldSize="giant"
-          placeholder="Party Name..."
-          [(ngModel)]="partyNameModel"
-        />
-        <label for="passwordInput">Party Password</label>
-        <input
-          name="passwordInput"
-          nbInput
-          fullwidth
-          fieldSize="giant"
-          placeholder="Password..."
-          [(ngModel)]="partyPasswordModel"
-        />
-        <button
-          status="success"
-          [disabled]="partyNameModel === ''"
-          nbButton
-          (click)="authenticateHost()"
-        >
-          Connect to Spotify
-        </button>
-      </ng-container>
-      <ng-container *ngIf="party">
-        <h1>{{ party.name }}</h1>
-        <div *ngFor="let member of party.partygoers" class="member-list">
-          <ng-container *ngIf="member.host">
-            Host: {{ member.username }}
-          </ng-container>
-          <ng-container *ngIf="!member.host">
-            {{ member.username
-            }}<nb-icon
-              (click)="removeMember(member.username)"
-              icon="close-circle-outline"
-            ></nb-icon>
-          </ng-container>
-        </div>
-        <button nbButton status="primary" (click)="addMember()">
-          Copy Invite Link<nb-icon icon="link-2-outline"></nb-icon>
-        </button>
-      </ng-container>
-    </nb-card-body>
-  </nb-card>
-
-  <div *ngIf="party" class="button-list">
-    <button
-      status="success"
-      nbButton
-      fullWidth
-      (click)="partyTime()"
-      [nbSpinner]="actionLoading"
-    >
-      PARTY TIME
-    </button>
-    <button
-      status="primary"
-      nbButton
-      fullWidth
-      (click)="getTopTracks()"
-      [nbSpinner]="actionLoading"
-    >
-      TOP TRACKS
-    </button>
-    <button
-      status="warning"
-      nbButton
-      fullWidth
-      (click)="analyzeTracks()"
-      [nbSpinner]="actionLoading"
-    >
-      Analyze Tracks
-    </button>
-    <button status="danger" nbButton fullWidth (click)="startNewParty()">
-      New Party
-    </button>
+  <div class="card-wrapper">
+    <nb-card [nbSpinner]="loading" nbSpinnerStatus="primary">
+      <nb-card-body class="party-card">
+        <ng-container *ngIf="party">
+          <h1>{{ party.name }}</h1>
+          <div class="content">
+            <div class="members">
+              <div *ngFor="let member of party.partygoers" class="member-list">
+                <ng-container *ngIf="member.host">
+                  Host: {{ member.username }}
+                </ng-container>
+                <ng-container *ngIf="!member.host">
+                  {{ member.username
+                  }}<nb-icon
+                    (click)="removeMember(member.username)"
+                    icon="close-circle-outline"
+                  ></nb-icon>
+                </ng-container>
+              </div>
+              <button nbButton outline status="info" (click)="addMember()">
+                Copy Invite Link<nb-icon icon="link-2-outline"></nb-icon>
+              </button>
+            </div>
+          </div>
+        </ng-container>
+      </nb-card-body>
+    </nb-card>
+    <nb-card *ngIf="party">
+      <button
+        class="main-button"
+        status="success"
+        nbButton
+        fullWidth
+        (click)="partyTime()"
+        [nbSpinner]="actionLoading"
+      >
+        PARTY TIME<nb-icon icon="music-outline"></nb-icon>
+      </button>
+    </nb-card>
   </div>
 </div>
-
-<nb-card *ngIf="tracks.length > 0" class="track-list">
-  <h1>Top Tracks</h1>
-  <div *ngFor="let track of tracks">
-    {{ track.name }} by {{ track.artists[0].name }}
-  </div>
-</nb-card>

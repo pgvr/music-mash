@@ -1,0 +1,33 @@
+<div class="wrapper">
+  <nb-card>
+    <nb-card-body class="party-card">
+      <h1>Create a New Party</h1>
+      <label for="nameInput">Party Name</label>
+      <input
+        id="nameInput"
+        nbInput
+        fullwidth
+        fieldSize="giant"
+        placeholder="Party Name..."
+        [(ngModel)]="partyNameModel"
+      />
+      <label for="passwordInput">Party Password</label>
+      <input
+        name="passwordInput"
+        nbInput
+        fullwidth
+        fieldSize="giant"
+        placeholder="Password..."
+        [(ngModel)]="partyPasswordModel"
+      />
+      <button
+        status="success"
+        [disabled]="partyNameModel === ''"
+        nbButton
+        (click)="authenticateHost()"
+      >
+        Connect to Spotify
+      </button>
+    </nb-card-body>
+  </nb-card>
+</div>

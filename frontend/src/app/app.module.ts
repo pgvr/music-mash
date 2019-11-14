@@ -20,10 +20,11 @@ import { NbEvaIconsModule } from "@nebular/eva-icons"
 import { PartyComponent } from "./party/party.component"
 import { FormsModule } from "@angular/forms"
 import { HttpClientModule } from "@angular/common/http"
-import { PasswordDialogComponent } from "./password-dialog/password-dialog.component"
+import { PasswordDialogComponent } from "./password-dialog/password-dialog.component";
+import { PartyCreationComponent } from './party-creation/party-creation.component'
 
 @NgModule({
-  declarations: [AppComponent, PartyComponent, PasswordDialogComponent],
+  declarations: [AppComponent, PartyComponent, PasswordDialogComponent, PartyCreationComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

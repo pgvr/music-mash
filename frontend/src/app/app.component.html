@@ -2,6 +2,10 @@
   <nb-layout-header fixed>
     <!-- Insert header here -->
     <h1 style="margin: 0;">MusicMash</h1>
+    <span style="flex-grow: 1;"></span>
+    <button status="danger" nbButton (click)="startNewParty()">
+      <span>New Party</span><nb-icon icon="plus-outline"></nb-icon>
+    </button>
   </nb-layout-header>
 
   <nb-layout-column>

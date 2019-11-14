@@ -1,0 +1,12 @@
+button {
+  span {
+    margin-right: 0.75rem;
+    @media only screen and (max-width: 500px) {
+      display: none;
+      margin: 0;
+    }
+  }
+  nb-icon {
+    margin: 0 !important;
+  }
+}

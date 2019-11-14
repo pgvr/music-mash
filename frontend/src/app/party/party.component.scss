@@ -1,20 +1,23 @@
 .wrapper {
   width: 100%;
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  align-items: center;
   flex-wrap: wrap;
+  flex-direction: column;
 
-  .button-list {
-    max-width: 500px;
-    button {
-      margin-bottom: 20px;
-    }
-  }
-  nb-card {
+  .card-wrapper {
     max-width: 500px;
     min-width: 300px;
-    h1 {
-      word-break: break-all;
+
+    nb-card {
+      h1 {
+        word-break: break-all;
+      }
+      .main-button {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+      }
     }
   }
 }
@@ -29,12 +32,17 @@
   input {
     margin-bottom: 30px;
   }
+  .content {
+    display: flex;
+    flex-direction: row;
+  }
 }
 
 .member-list {
   margin-bottom: 10px;
   nb-icon {
     cursor: pointer;
+    margin-left: 0.5rem;
   }
 }
 
