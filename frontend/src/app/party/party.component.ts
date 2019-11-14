@@ -100,6 +100,30 @@ export class PartyComponent implements OnInit {
     this.toastrService.info("You can share the link now", "Link Copied")
   }
 
+  async removeMember(username: string) {
+    this.actionLoading = true
+    try {
+      const password = await this.dialogService
+        .open(PasswordDialogComponent, {
+          context: { buttonText: "Delete User" },
+        })
+        .onClose.toPromise()
+
+      if (password !== -1) {
+        const updatedParty = await this.partyService.removeMember(
+          this.party._id,
+          username,
+          password,
+        )
+        this.party = updatedParty as Party
+      }
+
+      this.actionLoading = false
+    } catch (error) {
+      this.handleError(error)
+    }
+  }
+
   copyToClipboard(text) {
     var dummy = document.createElement("textarea")
     // to avoid breaking orgain page when copying more words
@@ -137,7 +161,9 @@ export class PartyComponent implements OnInit {
     this.actionLoading = true
     try {
       const password = await this.dialogService
-        .open(PasswordDialogComponent)
+        .open(PasswordDialogComponent, {
+          context: { buttonText: "Create Playlist" },
+        })
         .onClose.toPromise()
 
       if (password !== -1) {

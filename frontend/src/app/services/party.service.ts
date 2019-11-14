@@ -38,6 +38,12 @@ export class PartyService {
     return res
   }
 
+  async removeMember(partyId: string, username: string, password: string) {
+    const data = { partyId, username, password }
+    const res = await this.http.post(`${this.api}/deleteUser`, data).toPromise()
+    return res
+  }
+
   async getTopTracks(partyId: string): Promise<any[]> {
     const res = (await this.http
       .get(`${this.api}/tracks/${partyId}`)

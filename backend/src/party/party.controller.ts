@@ -53,6 +53,29 @@ export class PartyController {
     return updatedParty
   }
 
+  @Post("/deleteUser")
+  async deleteUserFromParty(
+    @Body()
+    deletion: {
+      partyId: string
+      username: string
+      password: string
+    },
+    @Res() res: Response,
+  ) {
+    const updatedParty = await this.partyService.deleteUserFromParty(
+      deletion.partyId,
+      deletion.username,
+      deletion.password,
+    )
+    if (!updatedParty) {
+      res.status(HttpStatus.UNAUTHORIZED).send()
+    } else {
+      res.send(updatedParty)
+    }
+    return updatedParty
+  }
+
   @Get(":id")
   async getPartyById(@Param("id") id) {
     const result = await this.partyService.getPartyById(id)

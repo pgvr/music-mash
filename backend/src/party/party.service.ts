@@ -75,6 +75,29 @@ export class PartyService {
     return updatedParty
   }
 
+  public async deleteUserFromParty(
+    partyId: string,
+    username: string,
+    password: string,
+  ) {
+    const party = await this.getPartyById(partyId)
+    const isHost = party.partygoers.find(dude => dude.username === username)
+      .host
+    if (!(await this.checkPassword(password, party.password)) || isHost) {
+      return null
+    }
+    const updatedParty = await this.partyModel
+      .findByIdAndUpdate(
+        partyId,
+        {
+          $pull: { partygoers: { username: username } },
+        },
+        { new: true },
+      )
+      .exec()
+    return updatedParty
+  }
+
   public async getPartyById(partyId: String): Promise<Party> {
     const party = await this.partyModel.find({ _id: partyId }).exec()
     return party[0]

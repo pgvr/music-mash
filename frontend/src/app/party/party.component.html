@@ -33,7 +33,16 @@
       <ng-container *ngIf="party">
         <h1>{{ party.name }}</h1>
         <div *ngFor="let member of party.partygoers" class="member-list">
-          {{ member.username }}, Host: {{ member.host }}
+          <ng-container *ngIf="member.host">
+            Host: {{ member.username }}
+          </ng-container>
+          <ng-container *ngIf="!member.host">
+            {{ member.username
+            }}<nb-icon
+              (click)="removeMember(member.username)"
+              icon="close-circle-outline"
+            ></nb-icon>
+          </ng-container>
         </div>
         <button nbButton status="primary" (click)="addMember()">
           Copy Invite Link<nb-icon icon="link-2-outline"></nb-icon>
