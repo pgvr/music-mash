@@ -104,7 +104,9 @@ export class PartyService {
   }
 
   public async partyTime(partyId: string, password: string) {
+    console.log("partytime")
     let party = await this.getPartyById(partyId)
+    console.log("got party")
     if (!(await this.checkPassword(password, party.password))) {
       return null
     }
@@ -117,11 +119,15 @@ export class PartyService {
       }
     }
     const playlistId = await this.createPartyPlaylist(party, host)
+    console.log("playlist id" + playlistId)
     let tracks = await this.getPartyTracks(partyId)
+    console.log("tracks length: " + tracks.length)
     let trackUris = []
     let dbTracks = []
     const metrics = await this.getTrackAnalysis(tracks, partyId)
+    console.log("analyzed tracks " + metrics.length)
     const artistsWithInfo = await this.getArtistInfo(tracks, partyId)
+    console.log("got artists with info")
     for (let i = 0; i < tracks.length; i++) {
       const track = tracks[i]
       const metric = metrics[i]
@@ -167,17 +173,21 @@ export class PartyService {
         time_signature: metric.time_signature,
       })
     }
+    console.log("about to udpate the party with tracks")
     const updatedParty = await this.partyModel
       .findByIdAndUpdate(partyId, {
         tracks: dbTracks,
       })
       .exec()
+    console.log("done updating the party")
     const partyTracks = await this.getSuggestedTracks(dbTracks, host)
+    console.log("got suggested tracks with length " + partyTracks.length)
     const res = await this.addTracksToPlaylist(
       playlistId,
       partyTracks.map(track => track.uri),
       host,
     )
+    console.log("added tracks to playlist")
     return res
   }
 
