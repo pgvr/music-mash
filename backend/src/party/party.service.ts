@@ -365,7 +365,9 @@ export class PartyService {
       }
     }
     // This is only executed if no playlist with the name exists
-    const url = `https://api.spotify.com/v1/users/${host.username}/playlists`
+    const url = `https://api.spotify.com/v1/users/${encodeURI(
+      host.username,
+    )}/playlists`
     const body = {
       name: `${party.name} - Music Mash`,
       description: "Created via Music Mash",
