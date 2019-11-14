@@ -12,7 +12,7 @@ export class PasswordDialogComponent implements OnInit {
   ngOnInit() {}
 
   cancel() {
-    this.ref.close()
+    this.ref.close(-1)
   }
 
   submit(password) {

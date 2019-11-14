@@ -125,11 +125,13 @@ export class PartyComponent implements OnInit {
         .open(PasswordDialogComponent)
         .onClose.toPromise()
 
-      await this.partyService.createPartyPlaylist(this.party._id, password)
-      this.toastrService.success(
-        "Check the host's Spotify account",
-        "Playlist Created",
-      )
+      if (password !== -1) {
+        await this.partyService.createPartyPlaylist(this.party._id, password)
+        this.toastrService.success(
+          "Check the host's Spotify account",
+          "Playlist Created",
+        )
+      }
 
       this.actionLoading = false
     } catch (error) {
