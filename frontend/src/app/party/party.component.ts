@@ -124,18 +124,13 @@ export class PartyComponent implements OnInit {
       const password = await this.dialogService
         .open(PasswordDialogComponent)
         .onClose.toPromise()
-      if (password) {
-        await this.partyService.createPartyPlaylist(this.party._id, password)
-        this.toastrService.success(
-          "Check the host's Spotify account",
-          "Playlist Created",
-        )
-      } else {
-        this.toastrService.warning(
-          "Provide the password to create the playlist",
-          "No Password",
-        )
-      }
+
+      await this.partyService.createPartyPlaylist(this.party._id, password)
+      this.toastrService.success(
+        "Check the host's Spotify account",
+        "Playlist Created",
+      )
+
       this.actionLoading = false
     } catch (error) {
       this.handleError(error)
