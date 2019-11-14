@@ -56,6 +56,13 @@ export class PartyService {
     partyId: String,
   ) {
     const partyMember = { host: false, token, username }
+    const party = await this.getPartyById(partyId)
+    console.log(party.partygoers)
+    for (let i = 0; i < party.partygoers.length; i++) {
+      if (party.partygoers[i].username === username) {
+        return party
+      }
+    }
     const updatedParty = await this.partyModel
       .findByIdAndUpdate(
         partyId,
@@ -68,14 +75,13 @@ export class PartyService {
     return updatedParty
   }
 
-  public async getPartyById(partyId: String) {
-    const party = (await this.partyModel.find({ _id: partyId }).exec()) as Party
-    return party
+  public async getPartyById(partyId: String): Promise<Party> {
+    const party = await this.partyModel.find({ _id: partyId }).exec()
+    return party[0]
   }
 
   public async partyTime(partyId: string, password: string) {
     let party = await this.getPartyById(partyId)
-    party = party[0]
     if (!(await this.checkPassword(password, party.password))) {
       return null
     }
@@ -241,7 +247,6 @@ export class PartyService {
 
   public async getArtistInfo(tracks, partyId: string) {
     let party = await this.getPartyById(partyId)
-    party = party[0]
     let artists = []
     for (let i = 0; i < tracks.length; i += 50) {
       let url = "https://api.spotify.com/v1/artists?ids="
@@ -345,7 +350,6 @@ export class PartyService {
 
   public async getPartyTracks(partyId: string) {
     let party = await this.getPartyById(partyId)
-    party = party[0]
     let topTracks = []
     for (let i = 0; i < party.partygoers.length; i++) {
       const member = party.partygoers[i]
@@ -371,7 +375,6 @@ export class PartyService {
 
   public async getTrackAnalysis(tracks: any[], partyId: string) {
     let party = await this.getPartyById(partyId)
-    party = party[0]
     let analyzedTracks = []
     // max 100 tracks per call
     for (let i = 0; i < tracks.length; i += 100) {

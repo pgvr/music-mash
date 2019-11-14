@@ -40,7 +40,7 @@ export class PartyComponent implements OnInit {
       // get by id from db
       console.log("use existing id")
       const res = await this.partyService.getPartyById(partyId)
-      this.party = res[0] as Party
+      this.party = res as Party
       console.log(this.party)
     } else if (state && code) {
       state = JSON.parse(state)

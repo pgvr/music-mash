@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core"
 import { HttpClient } from "@angular/common/http"
 import { environment } from "../../environments/environment"
+import { Party } from "../interfaces/party"
 
 @Injectable({
   providedIn: "root",
@@ -9,9 +10,9 @@ export class PartyService {
   api = environment.apiUrl + "/party"
   constructor(private http: HttpClient) {}
 
-  async getPartyById(partyId: string) {
+  async getPartyById(partyId: string): Promise<Party> {
     const res = await this.http.get(`${this.api}/${partyId}`).toPromise()
-    return res
+    return res as Party
   }
 
   async createNewParty(
