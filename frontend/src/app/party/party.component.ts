@@ -91,11 +91,26 @@ export class PartyComponent implements OnInit {
     const obj = {
       partyId: this.party._id,
     }
-    window.location.href = `https://accounts.spotify.com/authorize?client_id=d9ed471d2dae4ec8a26e7725bf62fa79&show_dialog=true&response_type=code&redirect_uri=${
+    const url = `https://accounts.spotify.com/authorize?client_id=d9ed471d2dae4ec8a26e7725bf62fa79&show_dialog=true&response_type=code&redirect_uri=${
       environment.redirectUrl
     }&scope=user-read-private%20user-read-email%20user-top-read&state=${JSON.stringify(
       obj,
     )}`
+    this.copyToClipboard(url)
+    this.toastrService.info("You can share the link now", "Link Copied")
+  }
+
+  copyToClipboard(text) {
+    var dummy = document.createElement("textarea")
+    // to avoid breaking orgain page when copying more words
+    // cant copy when adding below this code
+    // dummy.style.display = 'none'
+    document.body.appendChild(dummy)
+    //Be careful if you use texarea. setAttribute('value', value), which works with "input" does not work with "textarea". – Eduard
+    dummy.value = text
+    dummy.select()
+    document.execCommand("copy")
+    document.body.removeChild(dummy)
   }
 
   startNewParty() {
