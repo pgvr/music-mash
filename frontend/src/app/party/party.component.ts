@@ -42,6 +42,19 @@ export class PartyComponent implements OnInit {
       const res = await this.partyService.getPartyById(partyId)
       this.party = res as Party
       console.log(this.party)
+      const created = new Date(this.party.created_at)
+      const now = new Date()
+      const differenceInHours =
+        (now.getTime() - created.getTime()) / (1000 * 3600)
+      if (differenceInHours >= 1) {
+        // party too old
+        this.startNewParty()
+        this.toastrService.info(
+          "Unfortunately parties can only be used within one hour of creation. Please create a new one.",
+          "Party Too Old",
+          { duration: 10000 },
+        )
+      }
     } else if (state && code) {
       state = JSON.parse(state)
       if (state.partyName) {
