@@ -20,7 +20,7 @@ def post_something():
             })
     else:
         return jsonify({
-            "ERROR": "Something went wrong while getting top genres"
+            "ERROR": "Method is wrong"
         })
 
 if __name__ == '__main__':
