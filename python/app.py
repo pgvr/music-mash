@@ -3,9 +3,9 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 import get_top_genres
 
-@app.route('/getTopGenres/', methods=['POST', 'GET'])
+@app.route('/getTopGenres', methods=['GET'])
 def post_something():
-    if request.method == 'POST':
+    if request.method == 'GET':
         content = request.get_json(silent=True)
         partyname = content["partyname"]
         # You can add the test cases you made in the previous function, but in our case here you are just testing the POST functionality
