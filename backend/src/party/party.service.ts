@@ -81,6 +81,7 @@ export class PartyService {
     password: string,
   ) {
     const party = await this.getPartyById(partyId)
+    // Make sure host cannot be deleted
     const isHost = party.partygoers.find(dude => dude.username === username)
       .host
     if (!(await this.checkPassword(password, party.password)) || isHost) {
@@ -110,14 +111,14 @@ export class PartyService {
     if (!(await this.checkPassword(password, party.password))) {
       return null
     }
-    let host
-    for (let i = 0; i < party.partygoers.length; i++) {
-      const member = party.partygoers[i]
-      if (member.host) {
-        host = member
-        break
-      }
-    }
+    let host = party.partygoers.find(member => member.host)
+    // for (let i = 0; i < party.partygoers.length; i++) {
+    //   const member = party.partygoers[i]
+    //   if (member.host) {
+    //     host = member
+    //     break
+    //   }
+    // }
     console.log(party)
     console.log(host)
     const playlistId = await this.createPartyPlaylist(party, host)
@@ -173,24 +174,82 @@ export class PartyService {
         key: metric.key,
         mode: metric.mode,
         time_signature: metric.time_signature,
+        username: track.username,
       })
     }
+
+    // get and analyze suggested tracks, for data science stuff
+    const partyTracks = await this.getSuggestedTracks(dbTracks, host)
+    console.log("got suggested tracks with length " + partyTracks.length)
+    let suggestedDbTracks = []
+    const suggestedMetrics = await this.getTrackAnalysis(partyTracks, partyId)
+    console.log("analyzed tracks " + suggestedMetrics.length)
+    const suggestedArtistsWithInfo = await this.getArtistInfo(
+      partyTracks,
+      partyId,
+    )
+    console.log("got artists with info")
+    for (let i = 0; i < partyTracks.length; i++) {
+      const track = partyTracks[i]
+      const metric = suggestedMetrics[i]
+      const artist = suggestedArtistsWithInfo[i]
+      if (track.uri !== metric.uri) {
+        return "uris of track and metric didnt match"
+      }
+      if (track.artists[0].id !== artist.id) {
+        return "artist ids dont match"
+      }
+
+      suggestedDbTracks.push({
+        id: track.id,
+        uri: track.uri,
+        name: track.name,
+        popularity: track.popularity,
+        album: {
+          name: track.album.name,
+          releaseDate: track.album.release_date,
+          id: track.album.id,
+          uri: track.album.uri,
+        },
+        artist: {
+          name: artist.name,
+          id: artist.id,
+          uri: artist.uri,
+          genre: artist.genres,
+          popularity: artist.popularity,
+        },
+        acousticness: metric.acousticness,
+        danceability: metric.danceability,
+        energy: metric.energy,
+        instrumentalness: metric.instrumentalness,
+        liveness: metric.liveness,
+        loudness: metric.loudness,
+        speechiness: metric.speechiness,
+        tempo: metric.tempo,
+        valence: metric.valence,
+        duration_ms: metric.duration_ms,
+        key: metric.key,
+        mode: metric.mode,
+        time_signature: metric.time_signature,
+        username: "suggested",
+      })
+    }
+
     console.log("about to udpate the party with tracks")
     const updatedParty = await this.partyModel
       .findByIdAndUpdate(partyId, {
         tracks: dbTracks,
+        suggestedTracks: suggestedDbTracks,
       })
       .exec()
     console.log("done updating the party")
-    const partyTracks = await this.getSuggestedTracks(dbTracks, host)
-    console.log("got suggested tracks with length " + partyTracks.length)
     const res = await this.addTracksToPlaylist(
       playlistId,
       partyTracks.map(track => track.uri),
       host,
     )
     console.log("added tracks to playlist")
-    return res
+    return partyTracks
   }
 
   public async getSuggestedTracks(tracks, host) {
@@ -256,19 +315,20 @@ export class PartyService {
     url += `&min_valence=${minValence}&max_valence=${maxValence}&target_valence=${targetValence}`
 
     // max 5 seeds
-    url += "&seed_artists="
-    const interval = Math.ceil(tracks.length / 5)
-    for (let i = 0; i < tracks.length; i++) {
-      const index = i * interval
-      console.log(index)
-      if (index < tracks.length) {
-        url += tracks[index].artist.id
-        console.log(tracks[index].artist.id)
-        url += i < 4 ? "," : ""
-      } else {
-        break
-      }
-    }
+    // url += "&seed_artists="
+    // const interval = Math.ceil(tracks.length / 5)
+    // for (let i = 0; i < tracks.length; i++) {
+    //   const index = i * interval
+    //   console.log(index)
+    //   if (index < tracks.length) {
+    //     url += tracks[index].artist.id
+    //     console.log(tracks[index].artist.id)
+    //     url += i < 4 ? "," : ""
+    //   } else {
+    //     break
+    //   }
+    // }
+    url += "&seed_genres=alt-rock,metalcore,indie-pop,rock,emo"
 
     const { data } = await this.httpService
       .get(url, {
@@ -391,6 +451,7 @@ export class PartyService {
     for (let i = 0; i < party.partygoers.length; i++) {
       const member = party.partygoers[i]
       const userTracks = await this.getUserTracks(member.token)
+      userTracks.forEach(track => (track.username = member.username))
       topTracks = [...topTracks, ...userTracks]
     }
     return topTracks

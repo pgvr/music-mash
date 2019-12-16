@@ -148,7 +148,13 @@ export class PartyComponent implements OnInit {
 
       if (password !== -1) {
         this.actionLoading = true
-        await this.partyService.createPartyPlaylist(this.party._id, password)
+        const tracks = await this.partyService.createPartyPlaylist(
+          this.party._id,
+          password,
+        )
+        console.log(tracks)
+        const trackString = JSON.stringify(tracks)
+        this.copyToClipboard(trackString)
         this.toastrService.success(
           "Check the host's Spotify account",
           "Playlist Created",

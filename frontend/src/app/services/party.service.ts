@@ -52,9 +52,10 @@ export class PartyService {
   }
 
   async createPartyPlaylist(partyId: string, password: string) {
-    return await this.http
+    const tracks = await this.http
       .post(`${this.api}/playlist`, { id: partyId, password })
       .toPromise()
+    return tracks
   }
 
   async analyzeTracks(partyId: string) {
