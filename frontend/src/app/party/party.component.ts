@@ -104,7 +104,6 @@ export class PartyComponent implements OnInit {
   }
 
   async removeMember(username: string) {
-    this.actionLoading = true
     try {
       const password = await this.dialogService
         .open(PasswordDialogComponent, {
@@ -113,6 +112,7 @@ export class PartyComponent implements OnInit {
         .onClose.toPromise()
 
       if (password !== -1) {
+        this.actionLoading = true
         const updatedParty = await this.partyService.removeMember(
           this.party._id,
           username,
