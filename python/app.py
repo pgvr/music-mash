@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 import get_top_genres
 
-@app.route('/getTopGenres/', methods=['POST'])
+@app.route('/getTopGenres/', methods=['POST', 'GET'])
 def post_something():
     content = request.get_json(silent=True)
     partyname = content["partyname"]
