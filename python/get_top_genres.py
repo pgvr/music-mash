@@ -222,6 +222,8 @@ def rank_genres(tracks_df):
     return aggregated_genres
 
 def main(partyname):
+    print(partyname)
     tracks, suggested_tracks = get_tracks(partyname)
+    print(tracks)
     genres = rank_genres(tracks)
     return genres.index[:5].tolist()
