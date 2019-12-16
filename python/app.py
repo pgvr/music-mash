@@ -5,14 +5,19 @@ import get_top_genres
 
 @app.route('/getTopGenres/', methods=['POST', 'GET'])
 def post_something():
-    content = request.get_json(silent=True)
-    partyname = content["partyname"]
-    # You can add the test cases you made in the previous function, but in our case here you are just testing the POST functionality
-    if partyname:
-        genres = get_top_genres.main(partyname)
-        return jsonify({
-            "genres": genres
-        })
+    if request.method == 'POST':
+        content = request.get_json(silent=True)
+        partyname = content["partyname"]
+        # You can add the test cases you made in the previous function, but in our case here you are just testing the POST functionality
+        if partyname:
+            genres = get_top_genres.main(partyname)
+            return jsonify({
+                "genres": genres
+            })
+        else:
+            return jsonify({
+                "ERROR": "Something went wrong while getting top genres"
+            })
     else:
         return jsonify({
             "ERROR": "Something went wrong while getting top genres"
