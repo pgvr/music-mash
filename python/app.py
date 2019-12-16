@@ -5,11 +5,11 @@ import get_top_genres
 
 @app.route('/getTopGenres/', methods=['POST'])
 def post_something():
-    param = request.form.get('partyname')
-    print(param)
+    content = request.get_json(silent=True)
+    partyname = content["partyname"]
     # You can add the test cases you made in the previous function, but in our case here you are just testing the POST functionality
-    if param:
-        genres = get_top_genres.main(param)
+    if partyname:
+        genres = get_top_genres.main(partyname)
         return jsonify({
             "genres": genres
         })
