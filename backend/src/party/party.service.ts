@@ -177,9 +177,15 @@ export class PartyService {
         username: track.username,
       })
     }
+    await this.partyModel
+      .findByIdAndUpdate(partyId, {
+        tracks: dbTracks,
+      })
+      .exec()
+    console.log("done updating the party")
 
     // get and analyze suggested tracks, for data science stuff
-    const partyTracks = await this.getSuggestedTracks(dbTracks, host)
+    const partyTracks = await this.getSuggestedTracks(dbTracks, host, party)
     console.log("got suggested tracks with length " + partyTracks.length)
     let suggestedDbTracks = []
     const suggestedMetrics = await this.getTrackAnalysis(partyTracks, partyId)
@@ -236,9 +242,8 @@ export class PartyService {
     }
 
     console.log("about to udpate the party with tracks")
-    const updatedParty = await this.partyModel
+    await this.partyModel
       .findByIdAndUpdate(partyId, {
-        tracks: dbTracks,
         suggestedTracks: suggestedDbTracks,
       })
       .exec()
@@ -252,7 +257,7 @@ export class PartyService {
     return partyTracks
   }
 
-  public async getSuggestedTracks(tracks, host) {
+  public async getSuggestedTracks(tracks, host, party) {
     let url = "https://api.spotify.com/v1/recommendations?"
     const limit = 50
     const lowerQuantile = 0.25
@@ -328,7 +333,21 @@ export class PartyService {
     //     break
     //   }
     // }
-    url += "&seed_genres=alt-rock,metalcore,indie-pop,rock,emo"
+    const headers = {
+      "Content-Type": "application/json",
+    }
+    console.log(party.name)
+    const genreRequest = await this.httpService
+      .get(
+        "https://music-mash-python.herokuapp.com/getTopGenres?partyname=" +
+          encodeURI(party.name),
+      )
+      .toPromise()
+    const genres = genreRequest.data.genres
+    url += "&seed_genres="
+    for (let i = 0; i < genres.length; i++) {
+      url += genres[i] + ","
+    }
 
     const { data } = await this.httpService
       .get(url, {

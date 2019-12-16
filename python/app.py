@@ -7,7 +7,7 @@ import get_top_genres
 def post_something():
     if request.method == 'GET':
         content = request.get_json(silent=True)
-        partyname = content["partyname"]
+        partyname = username = request.args.get('partyname')
         # You can add the test cases you made in the previous function, but in our case here you are just testing the POST functionality
         if partyname:
             genres = get_top_genres.main(partyname)

@@ -57,8 +57,10 @@ export class PartyComponent implements OnInit {
       state = JSON.parse(state)
       if (state.partyName) {
         console.log("create new party")
+        const name = state.partyName.split("+").join(" ")
+        console.log(name)
         const res = await this.partyService
-          .createNewParty(state.partyName, code, state.partyPassword)
+          .createNewParty(name, code, state.partyPassword)
           .catch(err => this.handleError(err))
         this.party = res as Party
         this.router.navigateByUrl(`/party/${this.party._id}`)
