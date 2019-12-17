@@ -29,6 +29,22 @@ export class PartyService {
     return res
   }
 
+  async getShortLink(url: string) {
+    const res = await this.http
+      .post(
+        "https://api-ssl.bitly.com/v4/bitlinks",
+        { long_url: url },
+        {
+          headers: {
+            Authorization:
+              "Bearer " + "207e8baf126fd9a78609d7baea0eb3c6fd9caccc",
+          },
+        },
+      )
+      .toPromise()
+    return res as { link: string }
+  }
+
   async addMemberToParty(partyId: string, memberToken: string) {
     const data = {
       partyId,

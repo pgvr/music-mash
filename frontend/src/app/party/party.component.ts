@@ -90,7 +90,7 @@ export class PartyComponent implements OnInit {
     }
   }
 
-  addMember() {
+  async addMember() {
     const obj = {
       partyId: this.party._id,
     }
@@ -99,7 +99,8 @@ export class PartyComponent implements OnInit {
     }&scope=user-read-private%20user-read-email%20user-top-read&state=${JSON.stringify(
       obj,
     )}`
-    this.copyToClipboard(url)
+    const { link } = await this.partyService.getShortLink(url)
+    this.copyToClipboard(link)
     this.toastrService.info("You can share the link now", "Link Copied")
   }
 
