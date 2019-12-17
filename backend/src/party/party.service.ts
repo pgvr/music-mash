@@ -29,6 +29,24 @@ export class PartyService {
     const res = await this.httpService
       .post("https://accounts.spotify.com/api/token", body, { headers })
       .toPromise()
+    return {
+      accessToken: res.data["access_token"],
+      refreshToken: res.data["refresh_token"],
+    }
+  }
+  public async getRefreshedAccessToken(refreshToken: string) {
+    let body = new URLSearchParams()
+    body.set("grant_type", "refresh_token")
+    body.set("refresh_token", refreshToken)
+    body.set("redirect_uri", redirectUri)
+    const headers = {
+      Authorization:
+        "Basic ZDllZDQ3MWQyZGFlNGVjOGEyNmU3NzI1YmY2MmZhNzk6YWJkNWY3MjZlMDQ3NDU1ZDhmMGE3ODQxZTJjMzRkYmY=",
+      "Content-Type": "application/x-www-form-urlencoded",
+    }
+    const res = await this.httpService
+      .post("https://accounts.spotify.com/api/token", body, { headers })
+      .toPromise()
     return res.data["access_token"]
   }
   public async getSpotifyUsername(token: string) {
@@ -57,7 +75,6 @@ export class PartyService {
   ) {
     const partyMember = { host: false, token, username }
     const party = await this.getPartyById(partyId)
-    console.log(party.partygoers)
     for (let i = 0; i < party.partygoers.length; i++) {
       if (party.partygoers[i].username === username) {
         return party
@@ -104,45 +121,92 @@ export class PartyService {
     return party[0]
   }
 
+  /**
+   * Check if party is older than one hour
+   * access tokens are only valid for one hour
+   * refresh everything if it is older
+   * @param party
+   */
+  public async checkTokens(party: Party) {
+    const created = new Date(party.created_at)
+    const now = new Date()
+    const differenceInHours =
+      (now.getTime() - created.getTime()) / (1000 * 3600)
+    if (differenceInHours >= 1) {
+      // party too old
+      // update creation date of party
+      console.log("party is old, update everything")
+      const updatedParty = await this.refreshTokens(party)
+      return updatedParty
+    } else {
+      return party
+    }
+  }
+
+  /**
+   * Updates the creation date of the party to now
+   * get new access tokens for all members
+   * @param party
+   */
+  public async refreshTokens(party: Party) {
+    let updatedParty
+    for (let i = 0; i < party.partygoers.length; i++) {
+      const member = party.partygoers[i]
+      console.log(member.refreshToken)
+      const refreshedToken = await this.getRefreshedAccessToken(
+        member.refreshToken,
+      )
+      updatedParty = await this.partyModel.findByIdAndUpdate(
+        party._id,
+        { $set: { "partygoers.$[element].token": refreshedToken } },
+        // `$[element]` is tied to name `element` below
+        { arrayFilters: [{ "element.username": member.username }] },
+      )
+    }
+    updatedParty = await this.partyModel
+      .findByIdAndUpdate(party._id, {
+        created_at: new Date(),
+      })
+      .exec()
+    return updatedParty
+  }
+
+  /**
+   * Create playlist with suggested tracks
+   * @param partyId
+   * @param password
+   */
   public async partyTime(partyId: string, password: string) {
-    console.log("partytime")
     let party = await this.getPartyById(partyId)
-    console.log("got party")
     if (!(await this.checkPassword(password, party.password))) {
       return null
     }
+    // check if party is younger than 1 hour and tokens are fresh
+    party = await this.checkTokens(party)
+
+    // create empty playlist before adding tracks
     let host = party.partygoers.find(member => member.host)
-    // for (let i = 0; i < party.partygoers.length; i++) {
-    //   const member = party.partygoers[i]
-    //   if (member.host) {
-    //     host = member
-    //     break
-    //   }
-    // }
-    console.log(party)
-    console.log(host)
     const playlistId = await this.createPartyPlaylist(party, host)
-    console.log("playlist id" + playlistId)
+
+    // get top tracks for all members
     let tracks = await this.getPartyTracks(partyId)
-    console.log("tracks length: " + tracks.length)
-    let trackUris = []
     let dbTracks = []
+
+    // get metrics for all tracks
     const metrics = await this.getTrackAnalysis(tracks, partyId)
-    console.log("analyzed tracks " + metrics.length)
+    // get detailed artist info including the genre
     const artistsWithInfo = await this.getArtistInfo(tracks, partyId)
-    console.log("got artists with info")
     for (let i = 0; i < tracks.length; i++) {
       const track = tracks[i]
       const metric = metrics[i]
       const artist = artistsWithInfo[i]
-      trackUris.push(track.uri as String)
       if (track.uri !== metric.uri) {
         return "uris of track and metric didnt match"
       }
       if (track.artists[0].id !== artist.id) {
         return "artist ids dont match"
       }
-
+      // construct track object with info, metrics and artist
       dbTracks.push({
         id: track.id,
         uri: track.uri,
@@ -182,19 +246,15 @@ export class PartyService {
         tracks: dbTracks,
       })
       .exec()
-    console.log("done updating the party")
 
     // get and analyze suggested tracks, for data science stuff
     const partyTracks = await this.getSuggestedTracks(dbTracks, host, party)
-    console.log("got suggested tracks with length " + partyTracks.length)
     let suggestedDbTracks = []
     const suggestedMetrics = await this.getTrackAnalysis(partyTracks, partyId)
-    console.log("analyzed tracks " + suggestedMetrics.length)
     const suggestedArtistsWithInfo = await this.getArtistInfo(
       partyTracks,
       partyId,
     )
-    console.log("got artists with info")
     for (let i = 0; i < partyTracks.length; i++) {
       const track = partyTracks[i]
       const metric = suggestedMetrics[i]
@@ -241,19 +301,16 @@ export class PartyService {
       })
     }
 
-    console.log("about to udpate the party with tracks")
     await this.partyModel
       .findByIdAndUpdate(partyId, {
         suggestedTracks: suggestedDbTracks,
       })
       .exec()
-    console.log("done updating the party")
     const res = await this.addTracksToPlaylist(
       playlistId,
       partyTracks.map(track => track.uri),
       host,
     )
-    console.log("added tracks to playlist")
     return partyTracks
   }
 
@@ -319,24 +376,6 @@ export class PartyService {
     const targetValence = quantile(valenceValues, median)
     url += `&min_valence=${minValence}&max_valence=${maxValence}&target_valence=${targetValence}`
 
-    // max 5 seeds
-    // url += "&seed_artists="
-    // const interval = Math.ceil(tracks.length / 5)
-    // for (let i = 0; i < tracks.length; i++) {
-    //   const index = i * interval
-    //   console.log(index)
-    //   if (index < tracks.length) {
-    //     url += tracks[index].artist.id
-    //     console.log(tracks[index].artist.id)
-    //     url += i < 4 ? "," : ""
-    //   } else {
-    //     break
-    //   }
-    // }
-    const headers = {
-      "Content-Type": "application/json",
-    }
-    console.log(party.name)
     const genreRequest = await this.httpService
       .get(
         "https://music-mash-python.herokuapp.com/getTopGenres?partyname=" +
@@ -354,8 +393,6 @@ export class PartyService {
         headers: { Authorization: `Bearer ${host.token}` },
       })
       .toPromise()
-    console.log(url)
-    console.log("track length: " + data.tracks.length)
     return data.tracks
   }
 
@@ -439,7 +476,6 @@ export class PartyService {
     for (let i = 0; i < existingPlaylists.length; i++) {
       const playlist = existingPlaylists[i]
       if (playlist.name === `${party.name} - Music Mash`) {
-        console.log("playlist already exists, returning id")
         return playlist.id
       }
     }

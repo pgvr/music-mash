@@ -19,9 +19,10 @@ export class PartyController {
 
   @Post("/create")
   async createParty(@Body() partyCreationDTO: PartyCreationDTO) {
-    const accessToken = await this.partyService.getAccessToken(
-      partyCreationDTO.hostToken,
-    )
+    const {
+      accessToken,
+      refreshToken,
+    } = await this.partyService.getAccessToken(partyCreationDTO.hostToken)
     const username = await this.partyService.getSpotifyUsername(accessToken)
     const hash = await this.partyService.hashPassword(partyCreationDTO.password)
     const newParty: Party = {
@@ -32,6 +33,7 @@ export class PartyController {
           host: true,
           token: accessToken,
           username: username,
+          refreshToken,
         },
       ],
     }
@@ -41,7 +43,7 @@ export class PartyController {
 
   @Post("/update")
   async addPartyMember(@Body() partyMemberDTO: PartyMemberDTO) {
-    const accessToken = await this.partyService.getAccessToken(
+    const { accessToken } = await this.partyService.getAccessToken(
       partyMemberDTO.memberToken,
     )
     const username = await this.partyService.getSpotifyUsername(accessToken)

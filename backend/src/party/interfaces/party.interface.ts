@@ -2,7 +2,14 @@ export interface Party {
   _id?: string
   name?: string
   password?: string
-  partygoers: { _id?: string; username: string; token: string; host: boolean }[]
+  created_at?: Date
+  partygoers: {
+    _id?: string
+    username: string
+    token: string
+    host: boolean
+    refreshToken?: string
+  }[]
   tracks?: {
     id: string
     uri: string
