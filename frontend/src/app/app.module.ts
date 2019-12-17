@@ -21,10 +21,11 @@ import { PartyComponent } from "./party/party.component"
 import { FormsModule } from "@angular/forms"
 import { HttpClientModule } from "@angular/common/http"
 import { PasswordDialogComponent } from "./password-dialog/password-dialog.component";
-import { PartyCreationComponent } from './party-creation/party-creation.component'
+import { PartyCreationComponent } from './party-creation/party-creation.component';
+import { RedirectAuthComponent } from './redirect-auth/redirect-auth.component'
 
 @NgModule({
-  declarations: [AppComponent, PartyComponent, PasswordDialogComponent, PartyCreationComponent],
+  declarations: [AppComponent, PartyComponent, PasswordDialogComponent, PartyCreationComponent, RedirectAuthComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
