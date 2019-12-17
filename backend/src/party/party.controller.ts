@@ -43,14 +43,16 @@ export class PartyController {
 
   @Post("/update")
   async addPartyMember(@Body() partyMemberDTO: PartyMemberDTO) {
-    const { accessToken } = await this.partyService.getAccessToken(
-      partyMemberDTO.memberToken,
-    )
+    const {
+      accessToken,
+      refreshToken,
+    } = await this.partyService.getAccessToken(partyMemberDTO.memberToken)
     const username = await this.partyService.getSpotifyUsername(accessToken)
     const updatedParty = await this.partyService.addPartyMember(
       username,
       accessToken,
       partyMemberDTO.partyId,
+      refreshToken,
     )
     return updatedParty
   }

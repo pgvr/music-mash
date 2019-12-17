@@ -69,11 +69,12 @@ export class PartyService {
   }
 
   public async addPartyMember(
-    username: String,
-    token: String,
-    partyId: String,
+    username: string,
+    token: string,
+    partyId: string,
+    refreshToken: string,
   ) {
-    const partyMember = { host: false, token, username }
+    const partyMember = { host: false, token, username, refreshToken }
     const party = await this.getPartyById(partyId)
     for (let i = 0; i < party.partygoers.length; i++) {
       if (party.partygoers[i].username === username) {
