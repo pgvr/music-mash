@@ -514,7 +514,7 @@ export class PartyService {
   }
 
   private async getUserTracks(userToken: string) {
-    const url = "https://api.spotify.com/v1/me/top/tracks?limit=50"
+    const url = "https://api.spotify.com/v1/me/top/tracks?limit=20"
     const res = await this.httpService
       .get(url, {
         headers: {
