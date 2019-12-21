@@ -383,7 +383,7 @@ export class PartyService {
     //       encodeURI(party.name),
     //   )
     //   .toPromise()
-    const interval = 20
+    const interval = 50
     const genreRequests = []
     for (let i = 0; i < tracks.length; i += interval) {
       genreRequests.push(
