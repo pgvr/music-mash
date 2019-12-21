@@ -43,7 +43,7 @@ import { GenreListComponent } from "./genre-list/genre-list.component"
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    NbThemeModule.forRoot({ name: "cosmic" }),
+    NbThemeModule.forRoot({ name: "default" }),
     NbLayoutModule,
     NbButtonModule,
     NbIconModule,

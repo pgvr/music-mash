@@ -15,11 +15,10 @@ export class AppComponent {
   }
 
   changeTheme(event) {
-    console.log(event)
     if (event) {
-      this.themeService.changeTheme("default")
-    } else {
       this.themeService.changeTheme("cosmic")
+    } else {
+      this.themeService.changeTheme("default")
     }
   }
 }
