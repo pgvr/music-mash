@@ -130,6 +130,12 @@ export class PartyComponent implements OnInit {
     }
   }
 
+  openPlaylist() {
+    if (this.party && this.party.playlistUrl) {
+      window.open(this.party.playlistUrl, "_blank")
+    }
+  }
+
   copyToClipboard(text) {
     var dummy = document.createElement("textarea")
     // to avoid breaking orgain page when copying more words
@@ -160,6 +166,7 @@ export class PartyComponent implements OnInit {
         console.log(tracks)
         const trackString = JSON.stringify(tracks)
         this.copyToClipboard(trackString)
+        this.party = await this.partyService.getPartyById(this.party._id)
         this.toastrService.success(
           "Check the host's Spotify account",
           "Playlist Created",

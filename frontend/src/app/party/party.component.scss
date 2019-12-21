@@ -53,3 +53,11 @@
   }
   padding: 30px;
 }
+
+.external-buttons-container {
+  display: flex;
+  flex-direction: column;
+  .playlist-button {
+    margin-top: 10px;
+  }
+}

@@ -3,4 +3,5 @@ export interface Party {
   name: string
   partygoers: { _id?: string; username: string; token: string; host: boolean }[]
   created_at: Date
+  playlistUrl?: string
 }

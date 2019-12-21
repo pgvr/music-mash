@@ -18,9 +18,21 @@
                   ></nb-icon>
                 </ng-container>
               </div>
-              <button nbButton outline status="info" (click)="addMember()">
-                Copy Invite Link<nb-icon icon="link-2-outline"></nb-icon>
-              </button>
+              <div class="external-buttons-container">
+                <button nbButton outline status="info" (click)="addMember()">
+                  Copy Invite Link<nb-icon icon="link-2-outline"></nb-icon>
+                </button>
+                <button
+                  nbButton
+                  outline
+                  class="playlist-button"
+                  status="success"
+                  (click)="openPlaylist()"
+                  *ngIf="party.playlistUrl"
+                >
+                  Open Playlist<nb-icon icon="external-link-outline"></nb-icon>
+                </button>
+              </div>
             </div>
           </div>
         </ng-container>

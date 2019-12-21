@@ -307,12 +307,33 @@ export class PartyService {
         suggestedTracks: suggestedDbTracks,
       })
       .exec()
-    const res = await this.addTracksToPlaylist(
+    await this.addTracksToPlaylist(
       playlistId,
       partyTracks.map(track => track.uri),
       host,
     )
+    // update url to playlist
+    const playlistUrl = await this.getPlaylistUrl(playlistId, host)
+    await this.partyModel
+      .findByIdAndUpdate(partyId, {
+        playlistUrl,
+      })
+      .exec()
     return partyTracks
+  }
+
+  public async getPlaylistUrl(playlistId, host) {
+    const url = `https://api.spotify.com/v1/playlists/${playlistId}`
+    const playlistRequest = await this.httpService
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${host.token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+      .toPromise()
+    return playlistRequest.data.external_urls.spotify || ""
   }
 
   public async getSuggestedTracks(tracks, host, party) {

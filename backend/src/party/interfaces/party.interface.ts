@@ -18,4 +18,5 @@ export interface Party {
     album: { name: string; releaseDate: Date; id: string; uri: string }
     artist: { name: string; id: string; uri: string }
   }[]
+  playlistUrl?: string
 }
