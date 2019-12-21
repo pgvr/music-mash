@@ -389,7 +389,7 @@ export class PartyService {
       genreRequests.push(
         this.httpService
           .get(
-            "http://127.0.0.1:5000/getTopGenres?partyname=" +
+            "https://music-mash-python.herokuapp.com/getTopGenres?partyname=" +
               encodeURI(party.name) +
               "&start=" +
               i +
