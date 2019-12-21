@@ -5,11 +5,14 @@
         <h1>{{ party?.name }}</h1>
         <div *ngFor="let member of party?.partygoers" class="member-list">
           <ng-container *ngIf="member.host">
-            Host: {{ member.username }}
+            <nb-icon class="person-icon" icon="play-circle-outline"></nb-icon
+            >{{ member.username }}
           </ng-container>
           <ng-container *ngIf="!member.host">
-            {{ member.username
-            }}<nb-icon
+            <nb-icon class="person-icon" icon="person-outline"></nb-icon
+            >{{ member.username }}<span style="flex-grow: 1;"></span
+            ><nb-icon
+              class="close-icon"
               (click)="removeMember(member.username)"
               icon="close-circle-outline"
             ></nb-icon>
@@ -28,9 +31,10 @@
       nbButton
       fullWidth
       (click)="partyTime()"
+      [disabled]="actionLoading"
       [nbSpinner]="actionLoading"
     >
-      PARTY TIME
+      <nb-icon icon="link-2-outline"></nb-icon>PARTY TIME
     </button>
   </nb-card>
 </div>

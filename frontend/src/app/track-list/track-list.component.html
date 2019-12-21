@@ -6,7 +6,7 @@
         <div *ngFor="let track of party.suggestedTracks; let i = index">
           <div class="artist-container" *ngIf="i < 5">
             <img
-              [src]="track.artist.images[track.artist.images.length - 1].url"
+              [src]="track.artist.images[track.artist.images.length - 1]?.url"
             />
             <div class="artist-text">
               <span>{{ track.artist.name }}</span>

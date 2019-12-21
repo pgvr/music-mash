@@ -157,6 +157,7 @@ export class PartyService {
       const refreshedToken = await this.getRefreshedAccessToken(
         member.refreshToken,
       )
+      console.log(member.username)
       updatedParty = await this.partyModel.findByIdAndUpdate(
         party._id,
         { $set: { "partygoers.$[element].token": refreshedToken } },

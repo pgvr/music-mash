@@ -16,8 +16,12 @@
       flex-direction: row;
       align-items: center;
       margin-bottom: 5px;
-      nb-icon {
+      .close-icon {
+        cursor: pointer;
         margin-left: 5px;
+      }
+      .person-icon {
+        margin-right: 5px;
       }
     }
   }
