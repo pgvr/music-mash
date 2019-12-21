@@ -388,17 +388,17 @@ export class PartyService {
     // const targetSpeechiness = quantile(speechinessValues, median)
     // url += `&min_speechiness=${minSpeechiness}&max_speechiness=${maxSpeechiness}&target_speechiness=${targetSpeechiness}`
 
-    const tempoValues = tracks.map(track => track.tempo)
-    const minTempo = quantile(tempoValues, lowerQuantile)
-    const maxTempo = quantile(tempoValues, upperQuantile)
-    const targetTempo = quantile(tempoValues, median)
-    url += `&min_tempo=${minTempo}&max_tempo=${maxTempo}&target_tempo=${targetTempo}`
+    // const tempoValues = tracks.map(track => track.tempo)
+    // const minTempo = quantile(tempoValues, lowerQuantile)
+    // const maxTempo = quantile(tempoValues, upperQuantile)
+    // const targetTempo = quantile(tempoValues, median)
+    // url += `&min_tempo=${minTempo}&max_tempo=${maxTempo}&target_tempo=${targetTempo}`
 
-    const valenceValues = tracks.map(track => track.valence)
-    const minValence = quantile(valenceValues, lowerQuantile)
-    const maxValence = quantile(valenceValues, upperQuantile)
-    const targetValence = quantile(valenceValues, median)
-    url += `&min_valence=${minValence}&max_valence=${maxValence}&target_valence=${targetValence}`
+    // const valenceValues = tracks.map(track => track.valence)
+    // const minValence = quantile(valenceValues, lowerQuantile)
+    // const maxValence = quantile(valenceValues, upperQuantile)
+    // const targetValence = quantile(valenceValues, median)
+    // url += `&min_valence=${minValence}&max_valence=${maxValence}&target_valence=${targetValence}`
 
     // const genreRequest = await this.httpService
     //   .get(
