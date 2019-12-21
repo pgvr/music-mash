@@ -1,0 +1,36 @@
+<div class="card-wrapper">
+  <nb-card>
+    <nb-card-body>
+      <ng-container>
+        <h1>{{ party?.name }}</h1>
+        <div *ngFor="let member of party?.partygoers" class="member-list">
+          <ng-container *ngIf="member.host">
+            Host: {{ member.username }}
+          </ng-container>
+          <ng-container *ngIf="!member.host">
+            {{ member.username
+            }}<nb-icon
+              (click)="removeMember(member.username)"
+              icon="close-circle-outline"
+            ></nb-icon>
+          </ng-container>
+        </div>
+        <button nbButton outline status="info" (click)="addMember()">
+          Copy Invite Link<nb-icon icon="link-2-outline"></nb-icon>
+        </button>
+      </ng-container>
+    </nb-card-body>
+  </nb-card>
+  <nb-card>
+    <button
+      class="main-button"
+      status="success"
+      nbButton
+      fullWidth
+      (click)="partyTime()"
+      [nbSpinner]="actionLoading"
+    >
+      PARTY TIME<nb-icon icon="music-outline"></nb-icon>
+    </button>
+  </nb-card>
+</div>

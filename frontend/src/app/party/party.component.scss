@@ -2,62 +2,6 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
   flex-wrap: wrap;
-  flex-direction: column;
-
-  .card-wrapper {
-    max-width: 500px;
-    min-width: 300px;
-
-    nb-card {
-      h1 {
-        word-break: break-all;
-      }
-      .main-button {
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-      }
-    }
-  }
-}
-
-.party-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  label {
-    margin-bottom: 5px;
-  }
-  input {
-    margin-bottom: 30px;
-  }
-  .content {
-    display: flex;
-    flex-direction: row;
-  }
-}
-
-.member-list {
-  margin-bottom: 10px;
-  nb-icon {
-    cursor: pointer;
-    margin-left: 0.5rem;
-  }
-}
-
-.track-list {
-  h1 {
-    margin: 0;
-    margin-bottom: 10px;
-  }
-  padding: 30px;
-}
-
-.external-buttons-container {
-  display: flex;
-  flex-direction: column;
-  .playlist-button {
-    margin-top: 10px;
-  }
+  flex-direction: row;
 }

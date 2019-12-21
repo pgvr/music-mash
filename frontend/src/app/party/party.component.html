@@ -1,54 +1,17 @@
 <div class="wrapper">
-  <div class="card-wrapper">
-    <nb-card [nbSpinner]="loading" nbSpinnerStatus="primary">
-      <nb-card-body class="party-card">
-        <ng-container *ngIf="party">
-          <h1>{{ party.name }}</h1>
-          <div class="content">
-            <div class="members">
-              <div *ngFor="let member of party.partygoers" class="member-list">
-                <ng-container *ngIf="member.host">
-                  Host: {{ member.username }}
-                </ng-container>
-                <ng-container *ngIf="!member.host">
-                  {{ member.username
-                  }}<nb-icon
-                    (click)="removeMember(member.username)"
-                    icon="close-circle-outline"
-                  ></nb-icon>
-                </ng-container>
-              </div>
-              <div class="external-buttons-container">
-                <button nbButton outline status="info" (click)="addMember()">
-                  Copy Invite Link<nb-icon icon="link-2-outline"></nb-icon>
-                </button>
-                <button
-                  nbButton
-                  outline
-                  class="playlist-button"
-                  status="success"
-                  (click)="openPlaylist()"
-                  *ngIf="party.playlistUrl"
-                >
-                  Open Playlist<nb-icon icon="external-link-outline"></nb-icon>
-                </button>
-              </div>
-            </div>
-          </div>
-        </ng-container>
-      </nb-card-body>
-    </nb-card>
-    <nb-card *ngIf="party">
-      <button
-        class="main-button"
-        status="success"
-        nbButton
-        fullWidth
-        (click)="partyTime()"
-        [nbSpinner]="actionLoading"
-      >
-        PARTY TIME<nb-icon icon="music-outline"></nb-icon>
-      </button>
-    </nb-card>
-  </div>
+  <app-member-list
+    [party]="party"
+    [nbSpinner]="loading"
+    nbSpinnerStatus="success"
+  ></app-member-list>
+
+  <app-track-list
+    [party]="party"
+    *ngIf="party?.suggestedTracks?.length > 0"
+  ></app-track-list>
+
+  <app-genre-list
+    [party]="party"
+    *ngIf="party?.topGenres?.length > 0"
+  ></app-genre-list>
 </div>

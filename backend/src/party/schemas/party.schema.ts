@@ -6,6 +6,7 @@ export const PartySchema = new mongoose.Schema(
     password: String,
     created_at: { type: Date, default: Date.now },
     playlistUrl: String,
+    topGenres: [{ genre: String }],
     partygoers: [
       { username: String, token: String, host: Boolean, refreshToken: String },
     ],
@@ -22,6 +23,7 @@ export const PartySchema = new mongoose.Schema(
           uri: String,
           genre: [String],
           popularity: Number,
+          images: [{ height: Number, url: String, width: Number }],
         },
         acousticness: Number,
         danceability: Number,
@@ -52,6 +54,7 @@ export const PartySchema = new mongoose.Schema(
           uri: String,
           genre: [String],
           popularity: Number,
+          images: [{ height: Number, url: String, width: Number }],
         },
         acousticness: Number,
         danceability: Number,

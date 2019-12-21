@@ -1,0 +1,24 @@
+.card-wrapper {
+  max-width: 500px;
+  min-width: 300px;
+  margin: 20px;
+
+  nb-card {
+    h1 {
+      word-break: break-all;
+    }
+    .main-button {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+    .member-list {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-bottom: 5px;
+      nb-icon {
+        margin-left: 5px;
+      }
+    }
+  }
+}

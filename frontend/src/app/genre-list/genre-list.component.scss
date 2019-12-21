@@ -1,0 +1,11 @@
+.card-wrapper {
+  max-width: 500px;
+  min-width: 300px;
+  margin: 20px;
+
+  nb-card {
+    h1 {
+      word-break: break-all;
+    }
+  }
+}

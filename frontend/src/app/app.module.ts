@@ -22,10 +22,13 @@ import { FormsModule } from "@angular/forms"
 import { HttpClientModule } from "@angular/common/http"
 import { PasswordDialogComponent } from "./password-dialog/password-dialog.component";
 import { PartyCreationComponent } from './party-creation/party-creation.component';
-import { RedirectAuthComponent } from './redirect-auth/redirect-auth.component'
+import { RedirectAuthComponent } from './redirect-auth/redirect-auth.component';
+import { MemberListComponent } from './member-list/member-list.component';
+import { TrackListComponent } from './track-list/track-list.component';
+import { GenreListComponent } from './genre-list/genre-list.component'
 
 @NgModule({
-  declarations: [AppComponent, PartyComponent, PasswordDialogComponent, PartyCreationComponent, RedirectAuthComponent],
+  declarations: [AppComponent, PartyComponent, PasswordDialogComponent, PartyCreationComponent, RedirectAuthComponent, MemberListComponent, TrackListComponent, GenreListComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

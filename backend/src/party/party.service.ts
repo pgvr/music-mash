@@ -284,6 +284,7 @@ export class PartyService {
           uri: artist.uri,
           genre: artist.genres,
           popularity: artist.popularity,
+          images: artist.images,
         },
         acousticness: metric.acousticness,
         danceability: metric.danceability,
@@ -336,7 +337,7 @@ export class PartyService {
     return playlistRequest.data.external_urls.spotify || ""
   }
 
-  public async getSuggestedTracks(tracks, host, party) {
+  public async getSuggestedTracks(tracks, host, party: Party) {
     let url = "https://api.spotify.com/v1/recommendations?"
     const limit = 50
     const lowerQuantile = 0.25
@@ -404,7 +405,29 @@ export class PartyService {
     //       encodeURI(party.name),
     //   )
     //   .toPromise()
-    const interval = 50
+
+    // const genres = genreRequest.data.genres
+    url += "&seed_genres="
+    const topGenres = await this.getTopGenres(tracks, 50, party)
+    // update party in db with genres
+    await this.partyModel
+      .findByIdAndUpdate(party._id, {
+        topGenres,
+      })
+      .exec()
+    for (let i = 0; i < topGenres.length; i++) {
+      url += topGenres[i].genre + ","
+    }
+
+    const { data } = await this.httpService
+      .get(url, {
+        headers: { Authorization: `Bearer ${host.token}` },
+      })
+      .toPromise()
+    return data.tracks
+  }
+
+  public async getTopGenres(tracks, interval, party) {
     const genreRequests = []
     for (let i = 0; i < tracks.length; i += interval) {
       genreRequests.push(
@@ -444,18 +467,7 @@ export class PartyService {
     console.log(topGenres)
     const duration = new Date().getTime() - startTime
     console.log("calculating top genres took " + duration + "ms")
-    // const genres = genreRequest.data.genres
-    url += "&seed_genres="
-    for (let i = 0; i < topGenres.length; i++) {
-      url += topGenres[i].genre + ","
-    }
-
-    const { data } = await this.httpService
-      .get(url, {
-        headers: { Authorization: `Bearer ${host.token}` },
-      })
-      .toPromise()
-    return data.tracks
+    return topGenres
   }
 
   public async getArtistInfo(tracks, partyId: string) {
