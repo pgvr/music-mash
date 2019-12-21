@@ -232,6 +232,7 @@ def justCount(tracks_df):
                 genre_list.append([genre, 1])
     genre_df = pd.DataFrame(genre_list, columns =['genre', 'count'])
     genre_df = genre_df.groupby(["genre"]).sum()
+
     genre_df = genre_df.sort_values(["count"], ascending=False)
     print(genre_df)
     return genre_df

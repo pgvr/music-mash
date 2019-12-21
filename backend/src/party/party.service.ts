@@ -429,55 +429,21 @@ export class PartyService {
   }
 
   public async getTopGenres(tracks, interval, party) {
-    const genreRequests = []
-    for (let i = 0; i < tracks.length; i += interval) {
-      // genreRequests.push(
-      //   this.httpService
-      //     .get(
-      //       "https://music-mash-python.herokuapp.com/getTopGenres?partyname=" +
-      //         encodeURI(party.name) +
-      //         "&start=" +
-      //         i +
-      //         "&end=" +
-      //         (i + interval),
-      //     )
-      //     .toPromise(),
-      // )
-      genreRequests.push(
-        this.httpService
-          .get(
-            "http://127.0.0.1:5000/getTopGenres?partyname=" +
-              encodeURI(party.name) +
-              "&start=" +
-              i +
-              "&end=" +
-              (i + interval),
-          )
-          .toPromise(),
-      )
-    }
-    const req = await this.httpService
+    const res = await this.httpService
       .get(
         "http://127.0.0.1:5000/getTopGenres?partyname=" + encodeURI(party.name),
       )
       .toPromise()
     const startTime = new Date().getTime()
-    let results = await Promise.all(genreRequests)
-    results = results.map(res => res.data.genres)
+    const results = res.data.genres
     console.log(results)
     const topGenres = []
     // group genre chunks by nam
     for (let i = 0; i < results.length; i++) {
-      const list = results[i]
-      for (let j = 0; j < list.length; j++) {
-        const genre = list[j]
-        const itemInList = topGenres.find(item => item.genre === genre[0])
-        if (!itemInList) {
-          topGenres.push({ genre: genre[0], count: genre[1] })
-        } else {
-          itemInList.count += genre[1]
-        }
-      }
+      topGenres.push({
+        genre: results[i][0],
+        count: results[i][1],
+      })
     }
     // sort descending and take top 5
     topGenres.sort((item1, item2) => item2.count - item1.count)
