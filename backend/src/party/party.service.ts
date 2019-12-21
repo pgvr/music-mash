@@ -431,7 +431,8 @@ export class PartyService {
   public async getTopGenres(tracks, interval, party) {
     const res = await this.httpService
       .get(
-        "http://127.0.0.1:5000/getTopGenres?partyname=" + encodeURI(party.name),
+        "https://music-mash-python.herokuapp.com/getTopGenres?partyname=" +
+          encodeURI(party.name),
       )
       .toPromise()
     const startTime = new Date().getTime()
