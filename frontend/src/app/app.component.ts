@@ -1,5 +1,6 @@
 import { Component } from "@angular/core"
 import { Router } from "@angular/router"
+import { NbThemeService } from "@nebular/theme"
 
 @Component({
   selector: "app-root",
@@ -7,9 +8,18 @@ import { Router } from "@angular/router"
   styleUrls: ["./app.component.scss"],
 })
 export class AppComponent {
-  constructor(public router: Router) {}
+  constructor(public router: Router, private themeService: NbThemeService) {}
 
   startNewParty() {
     this.router.navigateByUrl("/party")
+  }
+
+  changeTheme(event) {
+    console.log(event)
+    if (event) {
+      this.themeService.changeTheme("default")
+    } else {
+      this.themeService.changeTheme("cosmic")
+    }
   }
 }
