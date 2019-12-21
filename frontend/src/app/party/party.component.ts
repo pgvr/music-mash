@@ -58,6 +58,10 @@ export class PartyComponent implements OnInit {
     this.loading = false
   }
 
+  updateParty(party) {
+    this.party = party
+  }
+
   handleError(err) {
     console.error(err)
     this.toastrService.warning(err.statusText, "Error")

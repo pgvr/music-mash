@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core"
+import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core"
 import { Party } from "../interfaces/party"
 import { environment } from "src/environments/environment"
 import { PasswordDialogComponent } from "../password-dialog/password-dialog.component"
@@ -13,6 +13,7 @@ import { Router } from "@angular/router"
 })
 export class MemberListComponent implements OnInit {
   @Input() party: Party
+  @Output() partyChanged: EventEmitter<Party> = new EventEmitter()
   actionLoading = false
 
   constructor(
@@ -41,7 +42,10 @@ export class MemberListComponent implements OnInit {
         console.log(tracks)
         const trackString = JSON.stringify(tracks)
         this.copyToClipboard(trackString)
-        this.party = await this.partyService.getPartyById(this.party._id)
+        const updatedParty = await this.partyService.getPartyById(
+          this.party._id,
+        )
+        this.updateParty(updatedParty)
         this.toastrService.success(
           "Check the host's Spotify account",
           "Playlist Created",
@@ -52,6 +56,10 @@ export class MemberListComponent implements OnInit {
     } catch (error) {
       this.handleError(error)
     }
+  }
+
+  updateParty(party) {
+    this.partyChanged.emit(party)
   }
 
   async addMember() {

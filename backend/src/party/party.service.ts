@@ -430,10 +430,22 @@ export class PartyService {
   public async getTopGenres(tracks, interval, party) {
     const genreRequests = []
     for (let i = 0; i < tracks.length; i += interval) {
+      // genreRequests.push(
+      //   this.httpService
+      //     .get(
+      //       "https://music-mash-python.herokuapp.com/getTopGenres?partyname=" +
+      //         encodeURI(party.name) +
+      //         "&start=" +
+      //         i +
+      //         "&end=" +
+      //         (i + interval),
+      //     )
+      //     .toPromise(),
+      // )
       genreRequests.push(
         this.httpService
           .get(
-            "https://music-mash-python.herokuapp.com/getTopGenres?partyname=" +
+            "http://127.0.0.1:5000/getTopGenres?partyname=" +
               encodeURI(party.name) +
               "&start=" +
               i +

@@ -3,6 +3,7 @@
     [party]="party"
     [nbSpinner]="loading"
     nbSpinnerStatus="success"
+    (partyChanged)="updateParty($event)"
   ></app-member-list>
 
   <app-track-list

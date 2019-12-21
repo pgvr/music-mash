@@ -187,8 +187,13 @@ def levenshtein(seq1, seq2):
 def find_distances(tracks_df, seeds):
     genre_list = []
     for i in tracks_df["genre"]:
-        for j in i:
-            genre_list.append(j)
+        if len(i) > 0:
+            genre_list.append(i[0])
+            if len(i) > 1:
+                genre_list.append(i[1])
+        # for j in i:
+        #     genre_list.append(j)
+    print(str(len(genre_list)))
     min_distances = []    
     for genre in genre_list:
         min_value = 9999
