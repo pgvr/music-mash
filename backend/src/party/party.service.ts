@@ -377,16 +377,56 @@ export class PartyService {
     const targetValence = quantile(valenceValues, median)
     url += `&min_valence=${minValence}&max_valence=${maxValence}&target_valence=${targetValence}`
 
-    const genreRequest = await this.httpService
-      .get(
-        "https://music-mash-python.herokuapp.com/getTopGenres?partyname=" +
-          encodeURI(party.name),
+    // const genreRequest = await this.httpService
+    //   .get(
+    //     "https://music-mash-python.herokuapp.com/getTopGenres?partyname=" +
+    //       encodeURI(party.name),
+    //   )
+    //   .toPromise()
+    const interval = 20
+    const genreRequests = []
+    for (let i = 0; i < tracks.length; i += interval) {
+      genreRequests.push(
+        this.httpService
+          .get(
+            "http://127.0.0.1:5000/getTopGenres?partyname=" +
+              encodeURI(party.name) +
+              "&start=" +
+              i +
+              "&end=" +
+              (i + interval),
+          )
+          .toPromise(),
       )
-      .toPromise()
-    const genres = genreRequest.data.genres
+    }
+    const startTime = new Date().getTime()
+    let results = await Promise.all(genreRequests)
+    results = results.map(res => res.data.genres)
+    const topGenres = []
+    // group genre chunks by nam
+    for (let i = 0; i < results.length; i++) {
+      const list = results[i]
+      for (let j = 0; j < list.length; j++) {
+        const genre = list[j]
+        const itemInList = topGenres.find(item => item.genre === genre[0])
+        if (!itemInList) {
+          topGenres.push({ genre: genre[0], weight: genre[1] })
+        } else {
+          itemInList.weight += genre[1]
+        }
+      }
+    }
+    // sort descending and take top 5
+    topGenres.sort((item1, item2) => item2.weight - item1.weight)
+    topGenres.splice(5)
+    console.log("top genres are:")
+    console.log(topGenres)
+    const duration = new Date().getTime() - startTime
+    console.log("calculating top genres took " + duration + "ms")
+    // const genres = genreRequest.data.genres
     url += "&seed_genres="
-    for (let i = 0; i < genres.length; i++) {
-      url += genres[i] + ","
+    for (let i = 0; i < topGenres.length; i++) {
+      url += topGenres[i].genre + ","
     }
 
     const { data } = await this.httpService
@@ -506,15 +546,17 @@ export class PartyService {
     let topTracks = []
     for (let i = 0; i < party.partygoers.length; i++) {
       const member = party.partygoers[i]
+      console.log(member.username)
       const userTracks = await this.getUserTracks(member.token)
       userTracks.forEach(track => (track.username = member.username))
+      console.log(userTracks.length)
       topTracks = [...topTracks, ...userTracks]
     }
     return topTracks
   }
 
   private async getUserTracks(userToken: string) {
-    const url = "https://api.spotify.com/v1/me/top/tracks?limit=20"
+    const url = "https://api.spotify.com/v1/me/top/tracks?limit=50"
     const res = await this.httpService
       .get(url, {
         headers: {

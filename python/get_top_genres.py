@@ -148,9 +148,9 @@ def flatten_tracks(tracks_df):
     tracks_df = tracks_df.drop(columns=["artist", "album"])
     return tracks_df
 
-def get_tracks(partyname):
+def get_tracks(partyname, start, end):
     cursor = parties.find({"name": partyname})
-    tracks = list(cursor)[0]["tracks"]
+    tracks = list(cursor)[0]["tracks"][int(start):int(end)]
     tracks_df = flatten_tracks(pd.DataFrame(tracks))
     
     #cursor = parties.find({"name": partyname})
@@ -219,8 +219,10 @@ def rank_genres(tracks_df):
     aggregated_genres = aggregated_genres.sort_values(["weighted count"], ascending=False)
     return aggregated_genres
 
-def main(partyname):
-    tracks = get_tracks(partyname)
+def main(partyname, start, end):
+    tracks = get_tracks(partyname, start, end)
     genres = rank_genres(tracks)
-    return genres.index[:5].tolist()
+    genres['genre'] = genres.index
+    genres['zipped'] = list(zip(genres["genre"], genres["weighted count"]))
+    return genres["zipped"].tolist()
 
