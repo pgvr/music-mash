@@ -11,7 +11,7 @@ def post_something():
         end = request.args.get('end')
         # You can add the test cases you made in the previous function, but in our case here you are just testing the POST functionality
         if partyname:
-            genres = get_top_genres.main(partyname, start, end)
+            genres = get_top_genres.main(partyname)
             return jsonify({
                 "genres": genres
             })

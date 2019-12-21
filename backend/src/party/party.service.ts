@@ -388,11 +388,11 @@ export class PartyService {
     // const targetSpeechiness = quantile(speechinessValues, median)
     // url += `&min_speechiness=${minSpeechiness}&max_speechiness=${maxSpeechiness}&target_speechiness=${targetSpeechiness}`
 
-    // const tempoValues = tracks.map(track => track.tempo)
-    // const minTempo = quantile(tempoValues, lowerQuantile)
-    // const maxTempo = quantile(tempoValues, upperQuantile)
-    // const targetTempo = quantile(tempoValues, median)
-    // url += `&min_tempo=${minTempo}&max_tempo=${maxTempo}&target_tempo=${targetTempo}`
+    const tempoValues = tracks.map(track => track.tempo)
+    const minTempo = quantile(tempoValues, lowerQuantile)
+    const maxTempo = quantile(tempoValues, upperQuantile)
+    const targetTempo = quantile(tempoValues, median)
+    url += `&min_tempo=${minTempo}&max_tempo=${maxTempo}&target_tempo=${targetTempo}`
 
     const valenceValues = tracks.map(track => track.valence)
     const minValence = quantile(valenceValues, lowerQuantile)
@@ -456,9 +456,15 @@ export class PartyService {
           .toPromise(),
       )
     }
+    const req = await this.httpService
+      .get(
+        "http://127.0.0.1:5000/getTopGenres?partyname=" + encodeURI(party.name),
+      )
+      .toPromise()
     const startTime = new Date().getTime()
     let results = await Promise.all(genreRequests)
     results = results.map(res => res.data.genres)
+    console.log(results)
     const topGenres = []
     // group genre chunks by nam
     for (let i = 0; i < results.length; i++) {
@@ -467,14 +473,14 @@ export class PartyService {
         const genre = list[j]
         const itemInList = topGenres.find(item => item.genre === genre[0])
         if (!itemInList) {
-          topGenres.push({ genre: genre[0], weight: genre[1] })
+          topGenres.push({ genre: genre[0], count: genre[1] })
         } else {
-          itemInList.weight += genre[1]
+          itemInList.count += genre[1]
         }
       }
     }
     // sort descending and take top 5
-    topGenres.sort((item1, item2) => item2.weight - item1.weight)
+    topGenres.sort((item1, item2) => item2.count - item1.count)
     topGenres.splice(5)
     console.log("top genres are:")
     console.log(topGenres)
