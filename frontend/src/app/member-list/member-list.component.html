@@ -33,6 +33,9 @@
       (click)="partyTime()"
       [disabled]="actionLoading"
       [nbSpinner]="actionLoading"
+      gtagEvent
+      trackOn="click"
+      action="partytime"
     >
       <nb-icon icon="link-2-outline"></nb-icon>PARTY TIME
     </button>
