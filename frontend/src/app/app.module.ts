@@ -62,7 +62,7 @@ import { GtagModule } from "angular-gtag"
     ServiceWorkerModule.register("ngsw-worker.js", {
       enabled: environment.production,
     }),
-    GtagModule.forRoot({ trackingId: "UA-100079341", trackPageviews: true }),
+    GtagModule.forRoot({ trackingId: "UA-100079341-3", trackPageviews: true }),
   ],
   providers: [],
   bootstrap: [AppComponent],
