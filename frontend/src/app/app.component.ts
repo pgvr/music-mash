@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core"
+import { OnInit, Component } from "@angular/core"
 import { Router } from "@angular/router"
 import { NbThemeService, NbToastrService } from "@nebular/theme"
 import { SwUpdate } from "@angular/service-worker"

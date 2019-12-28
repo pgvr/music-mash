@@ -14,7 +14,23 @@ export class PartyCreationComponent implements OnInit {
   constructor(private titleService: Title) {}
 
   ngOnInit() {
-    this.titleService.setTitle("Create Party - Music Mash")
+    const newTitle = "Create Party - Music Mash"
+    this.titleService.setTitle(newTitle)
+    this.changeOgTitle(newTitle)
+  }
+
+  changeOgTitle(title: string) {
+    const metas = document.getElementsByTagName("meta")
+
+    for (let c = 0; c < metas.length; c++) {
+      const property = metas[c].attributes.getNamedItem("property")
+      if (property && property.value === "og:title") {
+        console.log("changing title")
+        const newContent = document.createAttribute("content")
+        newContent.value = title
+        metas[c].attributes.setNamedItem(newContent)
+      }
+    }
   }
 
   authenticateHost() {

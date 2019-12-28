@@ -63,9 +63,13 @@ export class PartyComponent implements OnInit {
   updateParty(party) {
     this.party = party
     if (this.party.name) {
-      this.titleService.setTitle(`${this.party.name} - Music Mash`)
+      const newTitle = `${this.party.name} - Music Mash`
+      this.titleService.setTitle(newTitle)
+      this.changeOgTitle(newTitle)
     } else {
-      this.titleService.setTitle("Music Mash")
+      const newTitle = "Music Mash"
+      this.titleService.setTitle(newTitle)
+      this.changeOgTitle(newTitle)
     }
   }
 
@@ -77,6 +81,20 @@ export class PartyComponent implements OnInit {
       this.router.navigateByUrl(`/party/${this.party._id}`)
     } else {
       this.router.navigateByUrl("/party")
+    }
+  }
+
+  changeOgTitle(title: string) {
+    const metas = document.getElementsByTagName("meta")
+
+    for (let c = 0; c < metas.length; c++) {
+      const property = metas[c].attributes.getNamedItem("property")
+      if (property && property.value === "og:title") {
+        console.log("changing title")
+        const newContent = document.createAttribute("content")
+        newContent.value = title
+        metas[c].attributes.setNamedItem(newContent)
+      }
     }
   }
 }
