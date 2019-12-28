@@ -24,5 +24,5 @@ export interface Party {
     }
   }[]
   playlistUrl?: string
-  topGenres?: [{ genre: string }]
+  topGenres?: [{ genre: string; count: number }]
 }

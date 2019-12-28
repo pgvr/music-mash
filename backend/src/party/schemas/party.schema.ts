@@ -6,7 +6,7 @@ export const PartySchema = new mongoose.Schema(
     password: String,
     created_at: { type: Date, default: Date.now },
     playlistUrl: String,
-    topGenres: [{ genre: String }],
+    topGenres: [{ genre: String, count: Number }],
     partygoers: [
       { username: String, token: String, host: Boolean, refreshToken: String },
     ],
