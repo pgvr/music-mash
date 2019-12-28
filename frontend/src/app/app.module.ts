@@ -26,7 +26,9 @@ import { PartyCreationComponent } from "./party-creation/party-creation.componen
 import { RedirectAuthComponent } from "./redirect-auth/redirect-auth.component"
 import { MemberListComponent } from "./member-list/member-list.component"
 import { TrackListComponent } from "./track-list/track-list.component"
-import { GenreListComponent } from "./genre-list/genre-list.component"
+import { GenreListComponent } from "./genre-list/genre-list.component";
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment'
 
 @NgModule({
   declarations: [
@@ -56,6 +58,7 @@ import { GenreListComponent } from "./genre-list/genre-list.component"
     FormsModule,
     HttpClientModule,
     NbEvaIconsModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [],
   bootstrap: [AppComponent],
