@@ -5,6 +5,7 @@ import { Party } from "../interfaces/party"
 import { environment } from "../../environments/environment"
 import { NbDialogService, NbToastrService } from "@nebular/theme"
 import { PasswordDialogComponent } from "../password-dialog/password-dialog.component"
+import { Title } from "@angular/platform-browser"
 
 @Component({
   selector: "app-party",
@@ -20,6 +21,7 @@ export class PartyComponent implements OnInit {
     private partyService: PartyService,
     private router: Router,
     private toastrService: NbToastrService,
+    private titleService: Title,
   ) {}
 
   ngOnInit() {
@@ -34,7 +36,7 @@ export class PartyComponent implements OnInit {
     if (partyId) {
       // get by id from db
       const res = await this.partyService.getPartyById(partyId)
-      this.party = res as Party
+      this.updateParty(res as Party)
       console.log(this.party)
     } else if (state && code) {
       state = JSON.parse(state)
@@ -43,13 +45,13 @@ export class PartyComponent implements OnInit {
         const res = await this.partyService
           .createNewParty(name, code, state.partyPassword)
           .catch(err => this.handleError(err))
-        this.party = res as Party
+        this.updateParty(res as Party)
         this.router.navigateByUrl(`/party/${this.party._id}`)
       } else if (state.partyId) {
         const res = await this.partyService
           .addMemberToParty(state.partyId, code)
           .catch(err => this.handleError(err))
-        this.party = res as Party
+        this.updateParty(res as Party)
         this.router.navigateByUrl(`/party/${this.party._id}`)
       }
     } else {
@@ -60,6 +62,11 @@ export class PartyComponent implements OnInit {
 
   updateParty(party) {
     this.party = party
+    if (this.party.name) {
+      this.titleService.setTitle(`${this.party.name} - Music Mash`)
+    } else {
+      this.titleService.setTitle("Music Mash")
+    }
   }
 
   handleError(err) {

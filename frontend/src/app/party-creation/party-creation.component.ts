@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core"
 import { environment } from "../../environments/environment"
+import { Title } from "@angular/platform-browser"
 
 @Component({
   selector: "app-party-creation",
@@ -10,9 +11,11 @@ export class PartyCreationComponent implements OnInit {
   partyNameModel = ""
   partyPasswordModel = ""
 
-  constructor() {}
+  constructor(private titleService: Title) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.titleService.setTitle("Create Party - Music Mash")
+  }
 
   authenticateHost() {
     const obj = {
