@@ -15,7 +15,7 @@ export class AppComponent implements OnInit {
     private themeService: NbThemeService,
     private swUpdate: SwUpdate,
     private toastrService: NbToastrService,
-    gtag: Gtag,
+    public gtag: Gtag,
   ) {}
 
   ngOnInit() {
