@@ -24,6 +24,7 @@
     "@angular/service-worker": "~8.2.11",
     "@nebular/eva-icons": "4.5.0",
     "@nebular/theme": "^4.5.0",
+    "angular-gtag": "^1.0.4",
     "eva-icons": "^1.1.1",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",

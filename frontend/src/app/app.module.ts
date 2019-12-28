@@ -26,9 +26,10 @@ import { PartyCreationComponent } from "./party-creation/party-creation.componen
 import { RedirectAuthComponent } from "./redirect-auth/redirect-auth.component"
 import { MemberListComponent } from "./member-list/member-list.component"
 import { TrackListComponent } from "./track-list/track-list.component"
-import { GenreListComponent } from "./genre-list/genre-list.component";
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment'
+import { GenreListComponent } from "./genre-list/genre-list.component"
+import { ServiceWorkerModule } from "@angular/service-worker"
+import { environment } from "../environments/environment"
+import { GtagModule } from "angular-gtag"
 
 @NgModule({
   declarations: [
@@ -58,7 +59,10 @@ import { environment } from '../environments/environment'
     FormsModule,
     HttpClientModule,
     NbEvaIconsModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    ServiceWorkerModule.register("ngsw-worker.js", {
+      enabled: environment.production,
+    }),
+    GtagModule.forRoot({ trackingId: "UA-100079341", trackPageviews: true }),
   ],
   providers: [],
   bootstrap: [AppComponent],

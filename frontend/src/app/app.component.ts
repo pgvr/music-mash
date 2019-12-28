@@ -2,6 +2,7 @@ import { OnInit, Component } from "@angular/core"
 import { Router } from "@angular/router"
 import { NbThemeService, NbToastrService } from "@nebular/theme"
 import { SwUpdate } from "@angular/service-worker"
+import { Gtag } from "angular-gtag"
 
 @Component({
   selector: "app-root",
@@ -14,6 +15,7 @@ export class AppComponent implements OnInit {
     private themeService: NbThemeService,
     private swUpdate: SwUpdate,
     private toastrService: NbToastrService,
+    gtag: Gtag,
   ) {}
 
   ngOnInit() {
