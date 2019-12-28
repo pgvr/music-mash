@@ -1,4 +1,4 @@
-import { OnInit, Component } from "@angular/core"
+import { OnInit, Component, isDevMode } from "@angular/core"
 import { Router, NavigationEnd } from "@angular/router"
 import { NbThemeService, NbToastrService } from "@nebular/theme"
 import { SwUpdate } from "@angular/service-worker"
@@ -19,17 +19,14 @@ export class AppComponent implements OnInit {
     private swUpdate: SwUpdate,
     private toastrService: NbToastrService,
   ) {
-    const script = document.createElement("script")
-    script.async = true
-    script.src =
-      "https://www.googletagmanager.com/gtag/js?id=" + environment.code
-    document.head.prepend(script)
-    const navEndEvent$ = router.events.pipe(
-      filter(e => e instanceof NavigationEnd),
-    )
-    navEndEvent$.subscribe((e: NavigationEnd) => {
-      gtag("config", "UA-100079341-3", { page_path: e.urlAfterRedirects })
-    })
+    if (!isDevMode()) {
+      const navEndEvent$ = router.events.pipe(
+        filter(e => e instanceof NavigationEnd),
+      )
+      navEndEvent$.subscribe((e: NavigationEnd) => {
+        gtag("config", "UA-100079341-3", { page_path: e.urlAfterRedirects })
+      })
+    }
   }
 
   ngOnInit() {
