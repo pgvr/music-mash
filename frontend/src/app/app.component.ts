@@ -1,8 +1,11 @@
 import { OnInit, Component } from "@angular/core"
-import { Router } from "@angular/router"
+import { Router, NavigationEnd } from "@angular/router"
 import { NbThemeService, NbToastrService } from "@nebular/theme"
 import { SwUpdate } from "@angular/service-worker"
-import { Gtag } from "angular-gtag"
+import { filter } from "rxjs/operators"
+import { environment } from "../environments/environment"
+
+declare var gtag
 
 @Component({
   selector: "app-root",
@@ -15,8 +18,19 @@ export class AppComponent implements OnInit {
     private themeService: NbThemeService,
     private swUpdate: SwUpdate,
     private toastrService: NbToastrService,
-    public gtag: Gtag,
-  ) {}
+  ) {
+    const script = document.createElement("script")
+    script.async = true
+    script.src =
+      "https://www.googletagmanager.com/gtag/js?id=" + environment.code
+    document.head.prepend(script)
+    const navEndEvent$ = router.events.pipe(
+      filter(e => e instanceof NavigationEnd),
+    )
+    navEndEvent$.subscribe((e: NavigationEnd) => {
+      gtag("config", "UA-100079341-3", { page_path: e.urlAfterRedirects })
+    })
+  }
 
   ngOnInit() {
     this.swUpdate.available.subscribe(evt => {

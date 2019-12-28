@@ -6,6 +6,7 @@ export const environment = {
   apiUrl: "http://localhost:3000",
   redirectUrl: "http://localhost:4200/party",
   production: false,
+  code: "donttrack",
 }
 
 /*
