@@ -3,135 +3,10 @@ import pandas as pd
 from pandas.io.json import json_normalize
 from sklearn import preprocessing
 import numpy as np
-
-seed_genres = [
-    "acoustic",
-        "afrobeat",
-        "alt-rock",
-        "alternative",
-        "ambient",
-        "anime",
-        "black-metal",
-        "bluegrass",
-        "blues",
-        "bossanova",
-        "brazil",
-        "breakbeat",
-        "british",
-        "cantopop",
-        "chicago-house",
-        "children",
-        "chill",
-        "classical",
-        "club",
-        "comedy",
-        "country",
-        "dance",
-        "dancehall",
-        "death-metal",
-        "deep-house",
-        "detroit-techno",
-        "disco",
-        "disney",
-        "drum-and-bass",
-        "dub",
-        "dubstep",
-        "edm",
-        "electro",
-        "electronic",
-        "emo",
-        "folk",
-        "forro",
-        "french",
-        "funk",
-        "garage",
-        "german",
-        "gospel",
-        "goth",
-        "grindcore",
-        "groove",
-        "grunge",
-        "guitar",
-        "happy",
-        "hard-rock",
-        "hardcore",
-        "hardstyle",
-        "heavy-metal",
-        "hip-hop",
-        "holidays",
-        "honky-tonk",
-        "house",
-        "idm",
-        "indian",
-        "indie",
-        "indie-pop",
-        "industrial",
-        "iranian",
-        "j-dance",
-        "j-idol",
-        "j-pop",
-        "j-rock",
-        "jazz",
-        "k-pop",
-        "kids",
-        "latin",
-        "latino",
-        "malay",
-        "mandopop",
-        "metal",
-        "metal-misc",
-        "metalcore",
-        "minimal-techno",
-        "movies",
-        "mpb",
-        "new-age",
-        "new-release",
-        "opera",
-        "pagode",
-        "party",
-        "philippines-opm",
-        "piano",
-        "pop",
-        "pop-film",
-        "post-dubstep",
-        "power-pop",
-        "progressive-house",
-        "psych-rock",
-        "punk",
-        "punk-rock",
-        "r-n-b",
-        "rainy-day",
-        "reggae",
-        "reggaeton",
-        "road-trip",
-        "rock",
-        "rock-n-roll",
-        "rockabilly",
-        "romance",
-        "sad",
-        "salsa",
-        "samba",
-        "sertanejo",
-        "show-tunes",
-        "singer-songwriter",
-        "ska",
-        "sleep",
-        "songwriter",
-        "soul",
-        "soundtracks",
-        "spanish",
-        "study",
-        "summer",
-        "swedish",
-        "synth-pop",
-        "tango",
-        "techno",
-        "trance",
-        "trip-hop",
-        "turkish",
-        "work-out",
-        "world-music"
-]    
+from seed_genres import seed_genres
+from spotify_genres import available_genres
+import json
+import re
 connection = pymongo.MongoClient("mongodb+srv://pgvr:dwntmVliTApvmjJK@cluster0-55ryy.mongodb.net/music-mash?retryWrites=true&w=majority")
     
 db = connection["music-mash"]
@@ -249,3 +124,32 @@ def main(partyname):
     # genres['zipped'] = list(zip(genres["genre"], genres["weighted count"]))
     # return genres["zipped"].tolist()
 
+def create_genre_map():
+    # map all available genres to the closest seed genre
+    genre_map = []
+    for genre in available_genres:
+        min_distance = 9999
+        assigned_seed = "" 
+        for seed_genre in seed_genres:
+            distance = levenshtein(genre, seed_genre)        
+            if distance < min_distance:
+                min_distance = distance
+                assigned_seed = seed_genre
+        mislabeledPop = re.search("classic\s[a-z]+\spop", genre)
+        mislabeledRock = re.search("classic\s[a-z]+\srock", genre)
+        mislabeledCountry = re.search("classic\s[a-z]+\scountry", genre)
+        # from looking at the results "classical finnish rock" gets assigned to classical etc
+        # fix it with regex
+        if mislabeledPop:
+            assigned_seed = "pop"
+        elif mislabeledRock:
+            assigned_seed = "rock"
+        elif mislabeledCountry:
+            assigned_seed = "country"
+        genre_map.append({"genre": genre, "seed": assigned_seed})
+    print(genre_map)
+    with open('genreMap.json', 'w', encoding='utf-8') as f:
+        json.dump(genre_map, f, ensure_ascii=False, indent=4)
+
+
+print(create_genre_map())
