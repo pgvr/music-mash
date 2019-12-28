@@ -30,6 +30,7 @@ import { GenreListComponent } from "./genre-list/genre-list.component"
 import { ServiceWorkerModule } from "@angular/service-worker"
 import { environment } from "../environments/environment"
 import { GtagModule } from "angular-gtag"
+import { ChartsModule } from "ng2-charts"
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { GtagModule } from "angular-gtag"
       enabled: environment.production,
     }),
     GtagModule.forRoot({ trackingId: "UA-100079341-3", trackPageviews: true }),
+    ChartsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

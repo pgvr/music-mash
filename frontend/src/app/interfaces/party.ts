@@ -30,5 +30,5 @@ export interface Party {
       images: [{ height: number; url: string; width: number }]
     }
   }[]
-  topGenres: [{ genre: string }]
+  topGenres: [{ genre: string; count: number }]
 }

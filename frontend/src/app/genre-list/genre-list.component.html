@@ -3,11 +3,20 @@
     <nb-card-body class="party-card">
       <ng-container>
         <h1>Top 5 Genre</h1>
-        <div *ngFor="let genreItem of party.topGenres" class="member-list">
+        <!-- <div *ngFor="let genreItem of party.topGenres" class="member-list">
           <ng-container>
             {{ genreItem.genre }}
           </ng-container>
-        </div>
+        </div> -->
+        <canvas
+          baseChart
+          [data]="pieChartData"
+          [labels]="pieChartLabels"
+          [chartType]="pieChartType"
+          [options]="pieChartOptions"
+          [legend]="pieChartLegend"
+        >
+        </canvas>
       </ng-container>
     </nb-card-body>
   </nb-card>
