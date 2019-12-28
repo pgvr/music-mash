@@ -435,6 +435,11 @@ export class PartyService {
           encodeURI(party.name),
       )
       .toPromise()
+    // const res = await this.httpService
+    //   .get(
+    //     "http://127.0.0.1:5000/getTopGenres?partyname=" + encodeURI(party.name),
+    //   )
+    //   .toPromise()
     const startTime = new Date().getTime()
     const results = res.data.genres
     console.log(results)

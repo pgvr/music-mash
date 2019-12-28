@@ -73,7 +73,7 @@
     },
     {
         "genre": "mellow gold",
-        "seed": "electro"
+        "seed": "pop"
     },
     {
         "genre": "album rock",
@@ -81,7 +81,7 @@
     },
     {
         "genre": "adult standards",
-        "seed": "alternative"
+        "seed": "rock"
     },
     {
         "genre": "post-grunge",
@@ -97,11 +97,11 @@
     },
     {
         "genre": "classic rock",
-        "seed": "classical"
+        "seed": "rock"
     },
     {
         "genre": "r&b",
-        "seed": "dub"
+        "seed": "soul"
     },
     {
         "genre": "neo mellow",
@@ -113,7 +113,7 @@
     },
     {
         "genre": "uk pop",
-        "seed": "k-pop"
+        "seed": "pop"
     },
     {
         "genre": "alternative metal",
@@ -177,7 +177,7 @@
     },
     {
         "genre": "australian pop",
-        "seed": "iranian"
+        "seed": "pop"
     },
     {
         "genre": "indietronica",
@@ -201,7 +201,7 @@
     },
     {
         "genre": "gangster rap",
-        "seed": "dubstep"
+        "seed": "hip-hop"
     },
     {
         "genre": "country",
@@ -229,7 +229,7 @@
     },
     {
         "genre": "mexican pop",
-        "seed": "mandopop"
+        "seed": "pop"
     },
     {
         "genre": "regional mexican",
@@ -257,7 +257,7 @@
     },
     {
         "genre": "funk carioca",
-        "seed": "punk-rock"
+        "seed": "funk"
     },
     {
         "genre": "latin rock",
@@ -281,7 +281,7 @@
     },
     {
         "genre": "pop urbaine",
-        "seed": "opera"
+        "seed": "pop"
     },
     {
         "genre": "chamber pop",
@@ -389,7 +389,7 @@
     },
     {
         "genre": "motown",
-        "seed": "goth"
+        "seed": "power-pop"
     },
     {
         "genre": "indie soul",
@@ -421,7 +421,7 @@
     },
     {
         "genre": "colombian pop",
-        "seed": "mandopop"
+        "seed": "pop"
     },
     {
         "genre": "funk",
@@ -733,7 +733,7 @@
     },
     {
         "genre": "indie anthem-folk",
-        "seed": "death-metal"
+        "seed": "folk"
     },
     {
         "genre": "acoustic pop",
@@ -817,7 +817,7 @@
     },
     {
         "genre": "classic soul",
-        "seed": "classical"
+        "seed": "soul"
     },
     {
         "genre": "alternative hip hop",
@@ -1809,11 +1809,11 @@
     },
     {
         "genre": "nigerian pop",
-        "seed": "german"
+        "seed": "pop"
     },
     {
         "genre": "contemporary vocal jazz",
-        "seed": "classical"
+        "seed": "jazz"
     },
     {
         "genre": "italian underground hip hop",
@@ -2317,7 +2317,7 @@
     },
     {
         "genre": "neo classical metal",
-        "seed": "classical"
+        "seed": "metal"
     },
     {
         "genre": "early romantic era",
@@ -2713,7 +2713,7 @@
     },
     {
         "genre": "classic girl group",
-        "seed": "classical"
+        "seed": "pop"
     },
     {
         "genre": "indonesian jazz",
@@ -2729,7 +2729,7 @@
     },
     {
         "genre": "classic schlager",
-        "seed": "classical"
+        "seed": "german"
     },
     {
         "genre": "trancecore",
@@ -3381,7 +3381,7 @@
     },
     {
         "genre": "classic mandopop",
-        "seed": "classical"
+        "seed": "mandopop"
     },
     {
         "genre": "pinoy trap",
@@ -3525,7 +3525,7 @@
     },
     {
         "genre": "classic cantopop",
-        "seed": "classical"
+        "seed": "cantopop"
     },
     {
         "genre": "breakbeat",
@@ -3629,7 +3629,7 @@
     },
     {
         "genre": "cosmic american",
-        "seed": "classical"
+        "seed": "pop"
     },
     {
         "genre": "chicago punk",
@@ -3797,7 +3797,7 @@
     },
     {
         "genre": "icelandic indie",
-        "seed": "classical"
+        "seed": "indie"
     },
     {
         "genre": "el paso indie",
@@ -4505,7 +4505,7 @@
     },
     {
         "genre": "ska revival",
-        "seed": "classical"
+        "seed": "ska"
     },
     {
         "genre": "new weird america",
@@ -6013,7 +6013,7 @@
     },
     {
         "genre": "classic bollywood",
-        "seed": "classical"
+        "seed": "indian"
     },
     {
         "genre": "khaliji",
@@ -6137,7 +6137,7 @@
     },
     {
         "genre": "military rap",
-        "seed": "guitar"
+        "seed": "hip-hop"
     },
     {
         "genre": "leipzig electronic",
@@ -6569,7 +6569,7 @@
     },
     {
         "genre": "brass band",
-        "seed": "classical"
+        "seed": "jazz"
     },
     {
         "genre": "early avant garde",
@@ -6729,7 +6729,7 @@
     },
     {
         "genre": "icelandic folk",
-        "seed": "classical"
+        "seed": null
     },
     {
         "genre": "neo metal",
@@ -7269,7 +7269,7 @@
     },
     {
         "genre": "cha-cha-cha",
-        "seed": "classical"
+        "seed": "salsa"
     },
     {
         "genre": "kompa",
@@ -7457,7 +7457,7 @@
     },
     {
         "genre": "college a cappella",
-        "seed": "classical"
+        "seed": "pop"
     },
     {
         "genre": "focus trance",
@@ -8025,7 +8025,7 @@
     },
     {
         "genre": "classic j-rock",
-        "seed": "classical"
+        "seed": "rock"
     },
     {
         "genre": "k-rock",
@@ -8085,7 +8085,7 @@
     },
     {
         "genre": "gothic americana",
-        "seed": "classical"
+        "seed": "goth"
     },
     {
         "genre": "norwegian gospel",
@@ -8149,7 +8149,7 @@
     },
     {
         "genre": "classical guitar",
-        "seed": "classical"
+        "seed": "guitar"
     },
     {
         "genre": "charlotte nc indie",
@@ -9421,7 +9421,7 @@
     },
     {
         "genre": "malaysian tamil pop",
-        "seed": "classical"
+        "seed": "pop"
     },
     {
         "genre": "oud",
@@ -12217,7 +12217,7 @@
     },
     {
         "genre": "icelandic jazz",
-        "seed": "classical"
+        "seed": "jazz"
     },
     {
         "genre": "finnish electronic",
@@ -13721,7 +13721,7 @@
     },
     {
         "genre": "classical guitar quartet",
-        "seed": "classical"
+        "seed": "guitar"
     },
     {
         "genre": "delaware indie",
@@ -14669,7 +14669,7 @@
     },
     {
         "genre": "classical guitar duo",
-        "seed": "classical"
+        "seed": "guitar"
     },
     {
         "genre": "hard chime",
@@ -15037,7 +15037,7 @@
     },
     {
         "genre": "central asian folk",
-        "seed": "classical"
+        "seed": "folk"
     },
     {
         "genre": "korean contemporary classical",

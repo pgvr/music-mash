@@ -5,6 +5,7 @@ from sklearn import preprocessing
 import numpy as np
 from seed_genres import seed_genres
 from spotify_genres import available_genres
+from seed_correction import check_seed
 import json
 import re
 connection = pymongo.MongoClient("mongodb+srv://pgvr:dwntmVliTApvmjJK@cluster0-55ryy.mongodb.net/music-mash?retryWrites=true&w=majority")
@@ -100,11 +101,15 @@ def rank_genres(tracks_df):
     return aggregated_genres
 
 def justCount(tracks_df):
+    with open('genreMap.json', 'r') as f:
+        genre_dict = json.load(f)
     genre_list = []
     for track in tracks_df["genre"]:
         for genre in track:
-            if genre in seed_genres:
-                genre_list.append([genre, 1])
+            for index in range(len(genre_dict)):
+                if genre == genre_dict[index]["genre"]:
+                    genre_list.append([genre_dict[index]["seed"], (1/len(track))])
+                    break
     genre_df = pd.DataFrame(genre_list, columns =['genre', 'count'])
     genre_df = genre_df.groupby(["genre"]).sum()
 
@@ -124,6 +129,14 @@ def main(partyname):
     # genres['zipped'] = list(zip(genres["genre"], genres["weighted count"]))
     # return genres["zipped"].tolist()
 
+def testJson():
+    with open('genreMap.json', 'r') as f:
+        genre_dict = json.load(f)
+    for index in range(len(genre_dict)):
+        print(index)
+        break
+
+
 def create_genre_map():
     # map all available genres to the closest seed genre
     genre_map = []
@@ -135,21 +148,8 @@ def create_genre_map():
             if distance < min_distance:
                 min_distance = distance
                 assigned_seed = seed_genre
-        mislabeledPop = re.search("classic\s[a-z]+\spop", genre)
-        mislabeledRock = re.search("classic\s[a-z]+\srock", genre)
-        mislabeledCountry = re.search("classic\s[a-z]+\scountry", genre)
-        # from looking at the results "classical finnish rock" gets assigned to classical etc
-        # fix it with regex
-        if mislabeledPop:
-            assigned_seed = "pop"
-        elif mislabeledRock:
-            assigned_seed = "rock"
-        elif mislabeledCountry:
-            assigned_seed = "country"
+        assigned_seed = check_seed(genre, assigned_seed)
         genre_map.append({"genre": genre, "seed": assigned_seed})
     print(genre_map)
     with open('genreMap.json', 'w', encoding='utf-8') as f:
         json.dump(genre_map, f, ensure_ascii=False, indent=4)
-
-
-print(create_genre_map())
