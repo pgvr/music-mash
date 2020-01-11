@@ -1,70 +1,31 @@
 # MusicMash
 
-## Idee
+## Idea
 
-MusicMash ist eine Website die für Anlässe wie z.B. Parties Spotify Playlisten erstellt.
-Hierbei werden von Party-Teilnehmern, die sich bei der Website anmelden, die Top Tracks
-benutzt, um eine Playlist zu erstellen, die allen Teilnehmern gefällt.
+The party host creates a session and invites all guests to join with their spotify accounts. Using the top 50 tracks of each guest a genre as well as a track metric (danceability, accousticness, ...) analysis is done to find a playlist that fits something for every guest. The playlist is then created in the host's spotify account.
 
-## Tech Ablauf
+Live at: https://music-mash.netlify.com/
 
-Eine neue Party Session wird erstellt mit Host der sich anmeldet ==> SessionId wird angelegt und gespeichert, Token wird gespeichert
-Host Auth erst möglich wenn Partyname vorhanden ist
-Als URL Parameter in die Redirect URL mitgeben: Partyname und Host=true
+## Monorepo
 
-Redirect zur App
-Instant Loading Screen
-OnInit URL Parameter holen und createParty(partyName, hostToken)
+### Frontend
 
-Teilnehmer hinzufügen
-Weiterleitung zum Consent Screen
-Diesmal Party Id in die Redirect URL
+The frontend was built using Angular and the Nebular library. The frontend is automatically deployed from git to netlify.
 
-Einloggen
+### Backend
 
-Zurück zur Website mit SessionId und Token
-Party Info herstellen mit Party Id
-User mit Token der Party im Backend hinzufügen
+The backend was built using NestJs and Mongoose to connect to a Mondodb.
+Another backend is running python's flask server to some in depth data analysis using Pandas.
+Both backends are automatically deployed from git to heroku.
 
-Möglichkeit weitere Teilnehmer hinzuzufügen
+## Testing in the field
 
-Button mit "Los gehts"
+So far I have gotten mixed results. If the taste of music is diverse amongst guests the resulting playlist tends to settle for something generic like pop with a few reaches in the individual genres. When a group is mostly homogenous in musical taste the playlist accurately describes the preferences and can lead to some cool discoveries since the /recommendations endpoint of the spotify api can suggest songs that no participant has necessarily listened to.
 
-Bei Los werden alle Tokens der Party benutzt um Top Tracks zu ziehen
-Mit Top Tracks fette Analyse starten
-Top X Tracks nehmen und Playlist in Host Account anlegen
+## Data Analysis
 
-Theoretisch kann man die Party in der DB wieder löschen nachdem die Playlist erstellt ist
+The spotify api provides detailed metrics for each track available. Some of these metrics are "danceability", "accousticness", "instrumentalness", "power" and few more. Each value is between 0 and 1. When querying the /recommend endpoint all these metrics can be included with a min_, max_ and target_ value. Before sending the request all tracks are analyzed and for each metric the lower quartile is used for the min value, the upper quartile is used for the max value and the median is used for the target value. This should remove outliers and result in a good representation of the groups desired metrics. The /recommend endpoint also needs up to 5 seed_tracks, seed_artists or seed_genres. Since picking 5 tracks or artists would not result in a good representation of the group I decided to use the seed_genres which led to another problem.
 
-## DB
+For the seed_genres only about 100 genres are allowed, but spotify annotates their tracks with over 3000 different genres. To pick out the 5 most represented genres of the group I downloaded all available genres and matched all available seed_genres against the 3000 others. This is basically a map which gives the closest possible seed_genre for a given genre. To achieve this the Levenshtein is used to match the genres based purely on text similarity. After sorting out some genres manually, e.g. classic rock was matched to classical, the genre map seems functional but not perfect.
 
-MongoDB
-
-parties collection:
-````json
-{
-    id: "123",
-    name: "Halloween 2019",
-    partygoers: [
-        {
-            username: "patr1ckvg",
-            token: "123ABC",
-            host: true
-        }
-    ]
-}
-````
-
-## Backend
-
-`createParty(partyName, host: {token})`:
-generate id
-get username from token
-generate party object with id, name and host user
-
-`addUser(partyId, user: {token})`:
-get username from token
-add user to existing party by id
-
-`getPartyTracks(partyId)`:
-for each user in a party take the token and get the top tracks
+The genres of each track are then looked up in the map and the resulting seed_genres are summed up to find the top 5.
