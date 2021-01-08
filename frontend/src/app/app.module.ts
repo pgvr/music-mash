@@ -29,7 +29,6 @@ import { TrackListComponent } from "./track-list/track-list.component"
 import { GenreListComponent } from "./genre-list/genre-list.component"
 import { ServiceWorkerModule } from "@angular/service-worker"
 import { environment } from "../environments/environment"
-import { GtagModule } from "angular-gtag"
 import { ChartsModule } from "ng2-charts"
 
 @NgModule({
@@ -63,7 +62,6 @@ import { ChartsModule } from "ng2-charts"
     ServiceWorkerModule.register("ngsw-worker.js", {
       enabled: environment.production,
     }),
-    GtagModule.forRoot({ trackingId: "UA-100079341-3", trackPageviews: true }),
     ChartsModule,
   ],
   providers: [],

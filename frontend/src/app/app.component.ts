@@ -1,11 +1,7 @@
-import { OnInit, Component, isDevMode } from "@angular/core"
-import { Router, NavigationEnd } from "@angular/router"
-import { NbThemeService, NbToastrService } from "@nebular/theme"
+import { Component, OnInit } from "@angular/core"
+import { Router } from "@angular/router"
 import { SwUpdate } from "@angular/service-worker"
-import { filter } from "rxjs/operators"
-import { environment } from "../environments/environment"
-
-declare var gtag
+import { NbThemeService, NbToastrService } from "@nebular/theme"
 
 @Component({
   selector: "app-root",
@@ -19,14 +15,6 @@ export class AppComponent implements OnInit {
     private swUpdate: SwUpdate,
     private toastrService: NbToastrService,
   ) {
-    if (!isDevMode()) {
-      const navEndEvent$ = router.events.pipe(
-        filter(e => e instanceof NavigationEnd),
-      )
-      navEndEvent$.subscribe((e: NavigationEnd) => {
-        gtag("config", "UA-100079341-3", { page_path: e.urlAfterRedirects })
-      })
-    }
   }
 
   ngOnInit() {

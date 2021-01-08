@@ -24,7 +24,6 @@
     "@angular/service-worker": "~8.2.11",
     "@nebular/eva-icons": "4.5.0",
     "@nebular/theme": "^4.5.0",
-    "angular-gtag": "^1.0.4",
     "chart.js": "^2.9.3",
     "chartjs-plugin-datalabels": "^0.7.0",
     "eva-icons": "^1.1.1",
